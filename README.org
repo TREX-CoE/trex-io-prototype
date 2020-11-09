@@ -1,0 +1,56 @@
+#+TITLE: TREX I/O prototype library
+
+* Installation
+  This prototype uses the EZFIO library generator, which is provided as a
+  submodule. EZFIO requires the IRPF90 code generator, which is also provided as
+  a submodule.
+
+  For more info on
+
+  To clone this repository, use:
+
+  #+BEGIN_SRC bash
+git clone --recurse-submodules https://github.com/TREX-CoE/trex-io-prototype
+  #+END_SRC
+
+  To modify the configuration of the library, modify the file =trex.config=
+
+  To build the library, run:
+
+  #+BEGIN_SRC bash
+make
+  #+END_SRC
+
+  and the library will be built in the =lib/= directory.
+
+
+* Conventions
+
+** General
+
+   - All data is stored in atomic units.
+  
+** Atomic orbitals (AOs)
+   
+*** Gaussian orbitals
+
+    The AOs can be expressed in spherical or in cartesian coordinates.
+    They are stored as shells, and then the full AO basis can be
+    expanded according to the fixed orders of the the radial functions.
+
+    \[ chi_k(r_k,\theta_k,\phi_k) = \mathcal{N}_k Y^k_{lm}(\theta_k,\phi_k)\, \sum_i p_{ik} \exp(-\alpha_{ik} r_k^2) \]
+
+    \[ chi_k(x_k,y_k,z_k) = \mathcal{N}_k x_k^a\, y_k^b\, z_k^c\, \sum_i p_{ik} \exp(-\alpha_{ik} (x_k^2+y_k^2+z_k^2) ) \]
+
+    where $r_k, \theta_k, \phi_k$ and $x_k, y_k, z_k$ are expressed
+    with respect to the center of the AO.
+    
+    By definition, AOs are centered on nuclei. To enable the centering
+    of AOs in arbitrary positions, one can define dummy atoms in the
+    =nuclei= section.
+
+** Molecular orbitals (MOs)
+   
+   The MOs are expanded on the /normalized/ atomic basis set:
+
+   \[ \varphi_i(r) = \sum_k c_{ki} \chi_k(r) \]
