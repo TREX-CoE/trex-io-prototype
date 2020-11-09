@@ -1,0 +1,6 @@
+[submodule "EZFIO"]
+	path = EZFIO
+	url = https://gitlab.com/scemama/EZFIO
+[submodule "irpf90"]
+	path = irpf90
+	url = https://gitlab.com/scemama/irpf90.git
