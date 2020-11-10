@@ -37,10 +37,10 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${PWD}/lib
    - All the names are given in singular
    - The =num= suffix denotes the number. For example =apple_num= is
      the number of apples
-  
-** Atomic orbitals (AOs)
-   
-*** Gaussian orbitals
+
+** TODO Atomic orbitals (AOs)
+
+*** TODO Gaussian orbitals
 
     The AOs can be expressed in spherical or in cartesian coordinates.
     They are stored as shells, and then the full AO basis can be
@@ -52,13 +52,13 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${PWD}/lib
 
     where $r_k, \theta_k, \phi_k$ and $x_k, y_k, z_k$ are expressed
     with respect to the center of the AO.
-    
+
     By definition, AOs are centered on nuclei. To enable the centering
     of AOs in arbitrary positions, one can define dummy atoms in the
     =nuclei= section.
 
-** Molecular orbitals (MOs)
-   
+** TODO Molecular orbitals (MOs)
+
    The MOs are expanded on the /normalized/ atomic basis set:
 
    \[ \varphi_i(r) = \sum_k c_{ki} \chi_k(r) \]
