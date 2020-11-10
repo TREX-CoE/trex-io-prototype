@@ -1,4 +1,6 @@
 all: lib/libezfio.a Python/ezfio.py OCaml/ezfio.ml Bash/ezfio.sh
+	$(MAKE) -C src
+	$(MAKE) -C examples
 
 EZFIO/lib/libezfio.a: trex.config
 	[ ! -L EZFIO/config/trex.cfg ] && ln -s $$PWD/trex.config EZFIO/config/trex.cfg || :

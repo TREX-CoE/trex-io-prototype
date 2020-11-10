@@ -1,0 +1,8 @@
+*~
+fortran_write
+trex_file/
+trexio.f90
+*.mod
+*.o
+
+

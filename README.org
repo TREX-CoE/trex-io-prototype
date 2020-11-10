@@ -5,17 +5,15 @@
   submodule. EZFIO requires the IRPF90 code generator, which is also provided as
   a submodule.
 
-  For more info on
-
   To clone this repository, use:
 
   #+BEGIN_SRC bash
 git clone --recurse-submodules https://github.com/TREX-CoE/trex-io-prototype
   #+END_SRC
 
-  To modify the configuration of the library, modify the file =trex.config=
+  To modify the configuration of the library, modify the =trex.config= file.
 
-  To build the library, run:
+  To build the library and the examples, run:
 
   #+BEGIN_SRC bash
 make
@@ -23,12 +21,22 @@ make
 
   and the library will be built in the =lib/= directory.
 
+  To run the examples, you need to set the the path to the =lib=
+  directory into your =LD_LIBRARY_PATH= environment variable, for
+  instance:
+
+  #+BEGIN_SRC
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${PWD}/lib
+  #+END_SRC
 
 * Conventions
 
 ** General
 
    - All data is stored in atomic units.
+   - All the names are given in singular
+   - The =num= suffix denotes the number. For example =apple_num= is
+     the number of apples
   
 ** Atomic orbitals (AOs)
    
