@@ -75,8 +75,27 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${PWD}/lib
    \[ \varphi_i(r) = \sum_k c_{ki} \chi_k(r) \]
 
 
+* Helper functions
+  
+** Periodic table
 
-------------------------------
+*** =trexio_element_name_of_symbol=
+    Returns the name of an element from its symbol
+
+*** =trexio_element_number_of_symbol=
+    Returns the atomic number of an element from its symbol
+
+*** =trexio_element_symbol_of_number=
+    Returns the symbol of an element from its atomic number
+
+    
+** Spherical to cartesian coordinates transformation
+   
+   The transformation matrix from the AO basis expressed in spherical
+   coordinates to the AO basis expressed in cartesian coordinates can
+   be retrieved, as well as its pseudo-inverse.
+   
+* Acknowledgments
 
 ![European flag](https://trex-coe.eu/sites/default/files/inline-images/euflag.jpg)
 [TREX: Targeting Real Chemical Accuracy at the Exascale](https://trex-coe.eu) project has received funding from the European Union’s Horizon 2020 - Research and Innovation program - under grant agreement no. 952165. The content of this document does not represent the opinion of the European Union, and the European Union is not responsible for any use that might be made of such content.

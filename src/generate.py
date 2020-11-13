@@ -2,6 +2,8 @@
 import os, sys
 import re
 
+#--------------------------------------------------------------------------------
+
 def read_config(filename):
     """ Reads the config file and returns a dictionary where keys are
     groups and values are lists of items within the group.
@@ -57,6 +59,7 @@ def read_config(filename):
 
 
 
+#--------------------------------------------------------------------------------
 
 
 def generate_func(group, item, t):
@@ -139,6 +142,7 @@ def generate_get_interface(group, item):
 
 
 
+#--------------------------------------------------------------------------------
 
 def generate_module(config):
     text = [ """
@@ -158,6 +162,27 @@ module trexio
       integer*8, intent(in) :: trex_file
     end function trexio_close
   end interface
+
+  interface
+    integer function trexio_element_symbol_of_number(nb,symb)
+      integer      , intent(in)  :: nb
+      character*(*), intent(out) :: symb
+    end function trexio_element_symbol_of_number
+  end interface
+
+  interface
+    integer function trexio_element_number_of_symbol(symb,nb)
+      character*(*), intent(in)   :: symb
+      integer      , intent(out)  :: nb
+    end function trexio_element_number_of_symbol
+  end interface
+
+  interface
+    integer function trexio_element_name_of_symbol(symb,name)
+      character*(*), intent(in)   :: symb
+      character*(*), intent(out)  :: name
+    end function trexio_element_name_of_symbol
+  end interface
 """
     ]
     for group in config:
@@ -171,6 +196,7 @@ module trexio
     with open('trexio.f90','w') as f:
         f.write("\n".join(text))
 
+#--------------------------------------------------------------------------------
 
 
 def generate_functions(config):
@@ -205,10 +231,89 @@ end function trexio_close
         f.write("\n".join(text))
 
 
+#--------------------------------------------------------------------------------
+
+def generate_converters():
+    import json
+    with open('periodic_table.json','r') as f:
+        data = json.loads(f.read())
+
+    with open('trexio_functions.f90','a') as f:
+        ds = data["symbol"]
+        f.write("""
+integer function trexio_element_symbol_of_number(nb,symb) result(info)
+  implicit none
+  integer      , intent(in)  :: nb
+  character*(*), intent(out) :: symb
+
+  info = 0
+  select case(nb)
+""")
+        for id in ds.keys():
+            f.write("""
+    case (%d)
+        symb = '%s' """%(int(id),ds[id]) )
+
+        f.write("""
+    case default
+        info = -1
+  end select
+end function trexio_element_symbol_of_number
+""")
+
+
+        dn = data["number"]
+        f.write("""
+integer function trexio_element_number_of_symbol(symb,nb) result(info)
+  implicit none
+  character*(*), intent(in)   :: symb
+  integer      , intent(out)  :: nb
+
+  info = 0
+  select case(symb)
+""")
+        for id in dn.keys():
+            f.write("""
+    case ('%s')
+        nb = %d """%(id,int(dn[id])) )
+
+        f.write("""
+    case default
+        info = -1
+  end select
+end function trexio_element_number_of_symbol
+""")
+
+        dn2 = data["name"]
+        f.write("""
+integer function trexio_element_name_of_symbol(symb,name) result(info)
+  implicit none
+  character*(*), intent(in)   :: symb
+  character*(*), intent(out)  :: name
+
+  info = 0
+  select case(symb)
+""")
+        for id in dn.keys():
+            f.write("""
+    case ('%s')
+        name = '%s' """%(id,dn2[str(dn[id])].upper()) )
+
+        f.write("""
+    case default
+        info = -1
+  end select
+end function trexio_element_name_of_symbol
+""")
+
+
+
+
 def main():
     config = read_config(sys.argv[1])
     generate_module(config)
     generate_functions(config)
+    generate_converters()
 
 
 
