@@ -3,6 +3,11 @@ include ../make.config
 EXE=fortran_write fortran_read
 
 all: $(EXE)
+	@echo '----------------------------------------------------------'
+	@echo "Before running the examples you need to do:"
+	@echo 'export LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:$(TREXIO_ROOT)/lib'
+	@echo '----------------------------------------------------------'
+
 
 ../lib/libtrexio.so ../src/trexio.f90:
 	make -C ../src

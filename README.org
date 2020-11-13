@@ -11,6 +11,15 @@
 git clone --recurse-submodules https://github.com/TREX-CoE/trex-io-prototype
   #+END_SRC
 
+  then run
+  #+BEGIN_SRC bash
+./configure.sh
+  #+END_SRC
+
+  This step has created the file named =make.config=, which contains the
+  configuration for the Makefiles.aNow edit this file to adapt the compiler
+  and options to your computer.
+
   To modify the configuration of the library, modify the =trex.config= file.
 
   To build the library and the examples, run:
@@ -21,13 +30,15 @@ make
 
   and the library will be built in the =lib/= directory.
 
-  To run the examples, you need to set the the path to the =lib=
-  directory into your =LD_LIBRARY_PATH= environment variable, for
-  instance:
+** Important
 
-  #+BEGIN_SRC
+   To run the examples, you need to set the the path to the =lib=
+   directory into your =LD_LIBRARY_PATH= environment variable, for
+   instance:
+
+   #+BEGIN_SRC
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${PWD}/lib
-  #+END_SRC
+   #+END_SRC
 
 * Conventions
 
@@ -62,3 +73,11 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${PWD}/lib
    The MOs are expanded on the /normalized/ atomic basis set:
 
    \[ \varphi_i(r) = \sum_k c_{ki} \chi_k(r) \]
+
+
+
+------------------------------
+
+![European flag](https://trex-coe.eu/sites/default/files/inline-images/euflag.jpg)
+[TREX: Targeting Real Chemical Accuracy at the Exascale](https://trex-coe.eu) project has received funding from the European Union’s Horizon 2020 - Research and Innovation program - under grant agreement no. 952165. The content of this document does not represent the opinion of the European Union, and the European Union is not responsible for any use that might be made of such content.
+

@@ -1,3 +1,5 @@
+include make.config
+
 all: lib/libezfio.a Python/ezfio.py OCaml/ezfio.ml Bash/ezfio.sh
 	$(MAKE) -C src
 	$(MAKE) -C examples
