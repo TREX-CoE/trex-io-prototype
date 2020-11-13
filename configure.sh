@@ -1,8 +1,17 @@
+#!/bin/bash
+
+if [[ $(uname) == "Darwin" ]] ; then
+  AR="libtool -static -o"
+else
+  AR="ar crs"
+fi
+
 cat << EOF > make.config
 .EXPORT_ALL_VARIABLES:
 
 TREXIO_ROOT=$PWD
 IRPF90=\$(TREXIO_ROOT)/irpf90/bin/irpf90
+AR=$AR
 
 FC=gfortran -g
 FFLAGS=-fPIC  -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Wuninitialized  -fbacktrace -ffpe-trap=zero,overflow,underflow -finit-real=nan

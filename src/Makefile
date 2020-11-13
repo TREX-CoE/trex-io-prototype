@@ -8,7 +8,7 @@ all: $(TARGET)
 	$(MAKE) -C ..
 
 $(TARGET): trexio.o trexio_functions.o ../lib/libezfio.a
-	$(FC) -shared -o ../lib/libtrexio.so $^ ../lib/libezfio.a
+	$(FC) -shared -o ../lib/libtrexio.so $^ ../lib/libezfio.a -lz
 
 trexio.f90 trexio_functions.f90: ../trex.config generate.py
 	./generate.py $^
