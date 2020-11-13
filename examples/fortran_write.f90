@@ -15,6 +15,7 @@ program write_ezfio_example
   integer                        :: i
   integer                        :: info
   character*(*), parameter       :: trex_filename = 'trex_file'
+  double precision, parameter    :: a0 = 0.52917721067d0
 
   ! Get the xyz file name from the command line and user name
   ! =========================================================
@@ -92,6 +93,8 @@ program write_ezfio_example
   info = trexio_set_nucleus_num(trex_file,nucl_num)
   call check_success(info, 'Unable to set number of nuclei')
 
+  ! Convert into atomic units
+  nucl_coord = nucl_coord / a0
   info = trexio_set_nucleus_coord(trex_file,nucl_coord)
   call check_success(info, 'Unable to set nuclear coordinates')
 

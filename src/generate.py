@@ -6,7 +6,7 @@ def read_config(filename):
     """ Reads the config file and returns a dictionary where keys are
     groups and values are lists of items within the group.
     The items are tuples of (item_name, type, dimensions)."""
-        
+
     file = open(filename,'r')
     lines = [(x,filename) for x in file.readlines()]
     try:
@@ -15,7 +15,7 @@ def read_config(filename):
     except:
         pass
     file.close()
-    
+
     groups = {}
     group = None
     my_list = []
@@ -27,7 +27,7 @@ def read_config(filename):
             elif line[0] != ' ':  # New group
                 group = line.strip()
                 if group in list(groups.keys()):
-                    my_list = groups[group] 
+                    my_list = groups[group]
                 else:
                     my_list = []
             else:
@@ -59,7 +59,7 @@ def read_config(filename):
 
 
 
-def generate_set_func(group, item):
+def generate_func(group, item, t):
     result_scalar = """
 integer function {0}(trex_file, value) result(info)
     implicit none
@@ -80,7 +80,7 @@ integer function {0}(trex_file,value) result(info)
 end function {0}
 """
 
-    func_name = "trexio_set_{0}_{1}".format(group, item[0])
+    func_name = "trexio_{0}_{1}_{2}".format(t, group, item[0])
     ezfio_name = func_name.replace("trexio","ezfio")
     typ = item[1]
     dim = "(" + ",".join([":" for i in item[2]]) + ")"
@@ -89,13 +89,13 @@ end function {0}
         return result_scalar.format(func_name, typ, ezfio_name)
     else:
         return result_array.format(func_name, typ, dim, ezfio_name)
-    
 
-    
-def generate_set_interface(group, item):
+
+
+def generate_interface(group, item, t):
     result_scalar = """
   interface
-    integer function {0}(trex_file,value) 
+    integer function {0}(trex_file,value)
       integer*8, intent(in) :: trex_file
       {1}, intent(in) :: value
     end function {0}
@@ -104,14 +104,14 @@ def generate_set_interface(group, item):
 
     result_array = """
   interface
-    integer function {0}(trex_file,value) 
+    integer function {0}(trex_file,value)
       integer*8, intent(in) :: trex_file
       {1}, intent(in) :: value{2}
     end function {0}
   end interface
 """
 
-    func_name = "trexio_set_{0}_{1}".format(group, item[0])
+    func_name = "trexio_{0}_{1}_{2}".format(t, group, item[0])
     typ = item[1]
     dim = "(" + ",".join([":" for i in item[2]]) + ")"
 
@@ -119,7 +119,24 @@ def generate_set_interface(group, item):
         return result_scalar.format(func_name, typ)
     else:
         return result_array.format(func_name, typ, dim)
-    
+
+
+
+def generate_set_func(group, item):
+    return generate_func(group, item, "set")
+
+def generate_get_func(group, item):
+    return generate_func(group, item, "get")
+
+
+def generate_set_interface(group, item):
+    return generate_interface(group, item, "set")
+
+def generate_get_interface(group, item):
+    return generate_interface(group, item, "get")
+
+
+
 
 
 
@@ -129,7 +146,7 @@ module trexio
   integer, parameter  :: TREXIO_SUCCESS = 0
 
   interface
-    integer function trexio_open(filename, mode, trex_file) 
+    integer function trexio_open(filename, mode, trex_file)
       character*(*), intent(in) :: filename
       character*(*), intent(in) :: mode
       integer*8, intent(out)    :: trex_file
@@ -137,7 +154,7 @@ module trexio
   end interface
 
   interface
-    integer function trexio_close(trex_file) 
+    integer function trexio_close(trex_file)
       integer*8, intent(in) :: trex_file
     end function trexio_close
   end interface
@@ -146,13 +163,14 @@ module trexio
     for group in config:
         for item in config[group]:
             text += [
-                generate_set_interface(group, item)
+                generate_set_interface(group, item),
+                generate_get_interface(group, item)
             ]
     text += [ "end module trexio" ]
 
     with open('trexio.f90','w') as f:
         f.write("\n".join(text))
-        
+
 
 
 def generate_functions(config):
@@ -179,13 +197,14 @@ end function trexio_close
     for group in config:
         for item in config[group]:
             text += [
-                generate_set_func(group, item)
+                generate_set_func(group, item),
+                generate_get_func(group, item)
             ]
 
     with open('trexio_functions.f90','w') as f:
         f.write("\n".join(text))
-        
-    
+
+
 def main():
     config = read_config(sys.argv[1])
     generate_module(config)

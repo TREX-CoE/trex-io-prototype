@@ -1,5 +1,6 @@
 *~
 fortran_write
+fortran_read 
 trex_file/
 trexio.f90
 *.mod
