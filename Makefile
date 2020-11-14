@@ -20,3 +20,6 @@ OCaml/ezfio.ml: EZFIO/Ocaml/ezfio.ml
 Bash/ezfio.sh: EZFIO/Bash/ezfio.sh
 	cp $^ $@
 
+clean:
+	$(MAKE) -C src clean
+	$(MAKE) -C examples clean
