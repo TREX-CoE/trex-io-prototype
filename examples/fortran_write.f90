@@ -18,14 +18,15 @@ subroutine read_xyz(trex_file, xyz_filename)
   integer*8, intent(in)          :: trex_file
   character*(128), intent(in)    :: xyz_filename
 
-  integer                        :: nucl_num         ! Number of nuclei
+  integer*8                      :: nucl_num         ! Number of nuclei
   character*(256)                :: title            ! Title of the file
   character*(64), allocatable    :: nucl_label(:)    ! Atom labels
   real*8, allocatable            :: nucl_charge(:)   ! Nuclear charges
   real*8, allocatable            :: nucl_coord(:,:)  ! Nuclear coordinates
-  integer                        :: alpha_num        ! Number of alpha electrons
-  integer                        :: beta_num         ! Number of beta  electrons
-  integer                        :: i,j
+  integer*8                      :: alpha_num        ! Number of alpha electrons
+  integer*8                      :: beta_num         ! Number of beta  electrons
+  integer*8                      :: i
+  integer                        :: j
   integer                        :: info
   double precision, parameter    :: a0 = 0.52917721067d0
 
@@ -88,14 +89,14 @@ subroutine read_basis(trex_file, basis_filename)
   integer*8, intent(in)          :: trex_file
   character*(128), intent(in)    :: basis_filename
 
-  integer                        :: nucl_num         ! Number of nuclei
+  integer*8                      :: nucl_num         ! Number of nuclei
   character*(64), allocatable    :: nucl_label(:)    ! Atom labels
 
-  integer                        :: shell_num, prim_num
-  integer, allocatable           :: shell_center(:)
-  character, allocatable         :: shell_ang_mom(:)
-  integer, allocatable           :: shell_prim_num(:)
-  integer, allocatable           :: prim_index(:)
+  integer*8                      :: shell_num, prim_num
+  integer*8, allocatable         :: shell_center(:)
+  integer  , allocatable         :: shell_ang_mom(:)
+  integer*8, allocatable         :: shell_prim_num(:)
+  integer*8, allocatable         :: prim_index(:)
   double precision, allocatable  :: shell_factor(:)
   double precision, allocatable  :: exponent(:)
   double precision, allocatable  :: coefficient(:)
@@ -181,7 +182,24 @@ subroutine read_basis(trex_file, basis_filename)
     do
        read(10,*,iostat=j) label, k
        if (j /= 0) exit
-       shell_ang_mom(shell_num) = label(1:1)
+       select case (label(1:1))
+         case ('S')
+           shell_ang_mom(shell_num) = 0
+         case ('P')
+           shell_ang_mom(shell_num) = 1
+         case ('D')
+           shell_ang_mom(shell_num) = 2
+         case ('F')
+           shell_ang_mom(shell_num) = 3
+         case ('G')
+           shell_ang_mom(shell_num) = 4
+         case ('H')
+           shell_ang_mom(shell_num) = 5
+         case ('I')
+           shell_ang_mom(shell_num) = 6
+         case default
+           stop 'Too high angular momentum'
+       end select
        shell_prim_num(shell_num) = k
        shell_center(shell_num) = i
        prim_index(shell_num) = prim_num

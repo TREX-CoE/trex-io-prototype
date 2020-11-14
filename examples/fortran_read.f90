@@ -30,7 +30,7 @@ subroutine read_electrons(trex_file, alpha_num, beta_num)
   use trexio
   implicit none
   integer*8, intent(in)          :: trex_file
-  integer, intent(out)           :: alpha_num, beta_num
+  integer*8, intent(out)         :: alpha_num, beta_num
   integer :: info
 
   info = trexio_get_electron_up_num(trex_file,alpha_num)
@@ -46,7 +46,7 @@ subroutine read_nuclei(trex_file, nucl_num, nucl_coord, nucl_charge, nucl_label)
   use trexio
   implicit none
   integer*8, intent(in)          :: trex_file
-  integer,   intent(in)          :: nucl_num
+  integer*8, intent(in)          :: nucl_num
   double precision, intent(out)  :: nucl_coord(3,nucl_num)
   double precision, intent(out)  :: nucl_charge(nucl_num)
   character*(64), intent(out)    :: nucl_label(nucl_num)
@@ -71,10 +71,10 @@ subroutine read_basis(trex_file, shell_num, prim_num, center, ang_mom, &
   use trexio
   implicit none
   integer*8, intent(in)               :: trex_file
-  integer, intent(in)                 :: shell_num, prim_num
-  integer, intent(in)                 :: center(shell_num), shell_prim_num(shell_num)
-  character, intent(in)               :: ang_mom(shell_num)
-  integer, intent(in)                 :: prim_index(shell_num)
+  integer*8, intent(in)               :: shell_num, prim_num
+  integer*8, intent(in)               :: center(shell_num), shell_prim_num(shell_num)
+  integer  , intent(in)               :: ang_mom(shell_num)
+  integer*8, intent(in)               :: prim_index(shell_num)
   double precision, intent(in)        :: expo(prim_num)
   double precision, intent(in)        :: coef(prim_num)
 
@@ -105,13 +105,13 @@ end subroutine read_basis
 program read_example
   use trexio
   implicit none
-  integer                        :: nucl_num         ! Number of nuclei
+  integer*8                      :: nucl_num         ! Number of nuclei
   character*(256)                :: title            ! Title of the file
   character*(64), allocatable    :: nucl_label(:)    ! Atom labels
   real*8, allocatable            :: nucl_charge(:)   ! Nuclear charges
   real*8, allocatable            :: nucl_coord(:,:)  ! Nuclear coordinates
-  integer                        :: alpha_num        ! Number of alpha electrons
-  integer                        :: beta_num         ! Number of beta  electrons
+  integer*8                      :: alpha_num        ! Number of alpha electrons
+  integer*8                      :: beta_num         ! Number of beta  electrons
 
   integer*8                      :: trex_file        ! Handle for the TREX file
   integer                        :: i,j,k
@@ -119,16 +119,17 @@ program read_example
   character*(*), parameter       :: trex_filename = 'trex_file'
   double precision, parameter    :: a0 = 0.52917721067d0
 
-  integer                        :: shell_num, prim_num
-  integer, allocatable           :: shell_center(:)
-  character, allocatable         :: shell_ang_mom(:)
-  integer, allocatable           :: shell_prim_num(:)
-  integer, allocatable           :: prim_index(:)
+  integer*8                      :: shell_num, prim_num
+  integer*8, allocatable         :: shell_center(:)
+  integer  , allocatable         :: shell_ang_mom(:)
+  integer*8, allocatable         :: shell_prim_num(:)
+  integer*8, allocatable         :: prim_index(:)
   double precision, allocatable  :: shell_factor(:)
   double precision, allocatable  :: exponent(:)
   double precision, allocatable  :: coefficient(:)
   character*(64)                 :: label
- 
+  character, parameter           :: ang_mom(0:6) = (/ 'S', 'P', 'D', 'F', 'G', 'H', 'I' /)
+
   ! Read the data from the TREX file
   ! ================================
 
@@ -142,7 +143,7 @@ program read_example
   ! Read the data
   ! -------------
 
-  call read_metadata(trex_file, title) 
+  call read_metadata(trex_file, title)
   print *, 'Description: ', trim(title)
 
   call read_electrons(trex_file,alpha_num,beta_num)
@@ -188,7 +189,7 @@ program read_example
         print *, ''
         print *, trim(label)
      end if
-     print *, shell_ang_mom(i), shell_prim_num(i)
+     print *, ang_mom(shell_ang_mom(i)), shell_prim_num(i)
      do j=1,shell_prim_num(i)
         print '(I3,X,E16.10,3X,E16.10)', j, &
              exponent(prim_index(i)+j-1) , coefficient(prim_index(i)+j-1)

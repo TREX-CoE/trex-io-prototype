@@ -46,32 +46,66 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${PWD}/lib
 ** General
 
    - All data is stored in atomic units.
-   - All the names are given in singular
+   - All the words used are given in singular
    - The =num= suffix  denotes the number. For  example =apple_num= is
      the number of apples
+   - All dimensioning variables should be 64-bit integers (=integer*8=
+     in Fortran)
+   - All variables corresponding  to an address in an  array should be
+     64-bit integers
 
-** TODO Atomic orbitals (AOs)
-
-*** TODO Gaussian orbitals
-
-    The AOs can be expressed in spherical or in cartesian coordinates.
-    They  are stored  as shells,  and then  the full  AO basis  can be
-    expanded  according  to  the  fixed   orders  of  the  the  radial
-    functions.
-
-    \[ chi_k(r_k,\theta_k,\phi_k) = \mathcal{N}_k
-    Y^k_{lm}(\theta_k,\phi_k)\, \sum_i p_{ik} \exp(-\alpha_{ik} r_k^2)
-    \]
-
-    \[ chi_k(x_k,y_k,z_k) = \mathcal{N}_k x_k^a\, y_k^b\, z_k^c\,
-    \sum_i p_{ik} \exp(-\alpha_{ik} (x_k^2+y_k^2+z_k^2) ) \]
-
-    where $r_k,  \theta_k, \phi_k$ and  $x_k, y_k, z_k$  are expressed
-    with respect to the center of the AO.
+** Atomic orbitals (AOs)
 
     By definition, AOs are centered on nuclei. To enable the centering
     of AOs in  arbitrary positions, one can define dummy  atoms in the
     =nuclei= section.
+
+    The AOs can be expressed in spherical or in cartesian coordinates,
+    and are stored  as shells.
+
+    \[ chi_k(r_k,\theta_k,\phi_k) = \mathcal{N}_k
+       Y^k_{lm}(\theta_k,\phi_k)\, R(r_k)
+    \]
+
+    \[ chi_k(x_k,y_k,z_k) = \mathcal{N}_k x_k^a\, y_k^b\, z_k^c\,
+       R(x_k,y_k,z_k) ) \]
+
+    where $r_k,  \theta_k, \phi_k$ and  $x_k, y_k, z_k$  are expressed
+    with respect to the center of the AO.
+    
+    $\mathcal{N}_k$  is a  multiplicative constant,  which can  be the
+    normalization coefficient of the AO.
+
+    $R(r_k)$ is a spherically symmetric function describing the radial
+    behavior of the AO (Gaussian or Slater). 
+
+    $\Y^k_{lm}$ are the real spherical harmonics, as expressed [[https://en.wikipedia.org/wiki/Table_of_spherical_harmonics][here]].
+
+    The full AO basis can be expanded according to the fixed orders of
+    angular functions. For real spherical harmonics, the order is $-l,
+    \dots, 0,  \dots, l$.  For cartesian functions,  the order  is the
+    alphanumeric order of the string built as =a*"x"+b*"y"+c*"z"=. For
+    instance the polynomial $x^3yz^2$ is expressed as ="xxxyzz"=.
+
+    
+*** Gaussian orbitals
+
+    With Gaussian orbitals, the radial part is expressed as
+
+    \[ R(r_k) = \sum_i p_{ik} \exp(-\alpha_{ik} r_k^2) \]
+
+    \[ R(r_k) = \sum_i p_{ik} \exp(-\alpha_{ik} (x_k^2+y_k^2+z_k^2) ) \]
+
+
+*** Slater orbitals
+
+    With Slater orbitals, the radial part is expressed as
+
+    \[ R(r_k) = r_k^n \sum_i p_{ik} \exp(-\zeta_{ik} r_k) \]
+
+    \[ R(r_k) = (x_k^2+y_k^2+z_k^2)^{n/2} \sum_i p_{ik}
+                   \exp(-\zeta_{ik} (x_k^2+y_k^2+z_k^2)^{1/2} ) \]
+
 
 ** TODO Molecular orbitals (MOs)
 
