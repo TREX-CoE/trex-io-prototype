@@ -10,6 +10,7 @@ subroutine check_success(info,message)
   end if
 end subroutine check_success
 
+!--------------------------------------------------------------------------------
 
 subroutine read_xyz(trex_file, xyz_filename)
   use trexio
@@ -79,6 +80,7 @@ subroutine read_xyz(trex_file, xyz_filename)
 
 end subroutine read_xyz
 
+!--------------------------------------------------------------------------------
 
 subroutine read_basis(trex_file, basis_filename)
   use trexio
@@ -140,7 +142,7 @@ subroutine read_basis(trex_file, basis_filename)
           read(10,*)
        end do
     end do
-    
+
   end do
 
   buffer = 'Gaussian'
@@ -177,8 +179,10 @@ subroutine read_basis(trex_file, basis_filename)
 
     ! Read shell
     do
-       read(10,*,iostat=j) shell_ang_mom(shell_num), shell_prim_num(shell_num)
+       read(10,*,iostat=j) label, k
        if (j /= 0) exit
+       shell_ang_mom(shell_num) = label(1:1)
+       shell_prim_num(shell_num) = k
        shell_center(shell_num) = i
        prim_index(shell_num) = prim_num
        do j=1,shell_prim_num(shell_num)
@@ -187,7 +191,7 @@ subroutine read_basis(trex_file, basis_filename)
        end do
        shell_num = shell_num + 1
     end do
-    
+
   end do
 
   close(10)
@@ -197,6 +201,9 @@ subroutine read_basis(trex_file, basis_filename)
 
   info = trexio_set_basis_shell_ang_mom(trex_file, shell_ang_mom)
   call check_success(info, 'Unable to set basis shell_ang_mom')
+
+  info = trexio_set_basis_shell_prim_num(trex_file, shell_prim_num)
+  call check_success(info, 'Unable to set basis shell_prim_num')
 
   info = trexio_set_basis_prim_index(trex_file, prim_index)
   call check_success(info, 'Unable to set basis prim_index')
@@ -208,12 +215,12 @@ subroutine read_basis(trex_file, basis_filename)
   call check_success(info, 'Unable to set basis coefficient')
 
   return
-  
+
   10 continue
   stop 'Unable to find element in basis set file'
 end subroutine read_basis
 
-
+!--------------------------------------------------------------------------------
 
 program write_example
   use trexio

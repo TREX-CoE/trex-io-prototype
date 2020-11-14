@@ -10,6 +10,7 @@ subroutine check_success(info,message)
   end if
 end subroutine check_success
 
+!--------------------------------------------------------------------------------
 
 subroutine read_metadata(trex_file, title)
   use trexio
@@ -23,6 +24,7 @@ subroutine read_metadata(trex_file, title)
   call check_success(info, 'Unable to get description')
 end subroutine read_metadata
 
+!--------------------------------------------------------------------------------
 
 subroutine read_electrons(trex_file, alpha_num, beta_num)
   use trexio
@@ -38,6 +40,7 @@ subroutine read_electrons(trex_file, alpha_num, beta_num)
   call check_success(info, 'Unable to get dn electrons')
 end subroutine read_electrons
 
+!--------------------------------------------------------------------------------
 
 subroutine read_nuclei(trex_file, nucl_num, nucl_coord, nucl_charge, nucl_label)
   use trexio
@@ -61,6 +64,43 @@ subroutine read_nuclei(trex_file, nucl_num, nucl_coord, nucl_charge, nucl_label)
 
 end subroutine read_nuclei
 
+!--------------------------------------------------------------------------------
+
+subroutine read_basis(trex_file, shell_num, prim_num, center, ang_mom, &
+     shell_prim_num, prim_index, expo, coef)
+  use trexio
+  implicit none
+  integer*8, intent(in)               :: trex_file
+  integer, intent(in)                 :: shell_num, prim_num
+  integer, intent(in)                 :: center(shell_num), shell_prim_num(shell_num)
+  character, intent(in)               :: ang_mom(shell_num)
+  integer, intent(in)                 :: prim_index(shell_num)
+  double precision, intent(in)        :: expo(prim_num)
+  double precision, intent(in)        :: coef(prim_num)
+
+  integer                        :: info
+
+  info = trexio_get_basis_shell_center(trex_file, center)
+  call check_success(info, 'Unable to get basis shell_center')
+
+  info = trexio_get_basis_shell_ang_mom(trex_file, ang_mom)
+  call check_success(info, 'Unable to get basis shell_ang_mom')
+
+  info = trexio_get_basis_shell_prim_num(trex_file, shell_prim_num)
+  call check_success(info, 'Unable to get basis shell_prim_num')
+
+  info = trexio_get_basis_prim_index(trex_file, prim_index)
+  call check_success(info, 'Unable to get basis prim_index')
+
+  info = trexio_get_basis_exponent(trex_file, expo)
+  call check_success(info, 'Unable to get basis exponent')
+
+  info = trexio_get_basis_coefficient(trex_file, coef)
+  call check_success(info, 'Unable to get basis coefficient')
+
+end subroutine read_basis
+
+!--------------------------------------------------------------------------------
 
 program read_example
   use trexio
@@ -74,11 +114,21 @@ program read_example
   integer                        :: beta_num         ! Number of beta  electrons
 
   integer*8                      :: trex_file        ! Handle for the TREX file
-  integer                        :: i
+  integer                        :: i,j,k
   integer                        :: info
   character*(*), parameter       :: trex_filename = 'trex_file'
   double precision, parameter    :: a0 = 0.52917721067d0
 
+  integer                        :: shell_num, prim_num
+  integer, allocatable           :: shell_center(:)
+  character, allocatable         :: shell_ang_mom(:)
+  integer, allocatable           :: shell_prim_num(:)
+  integer, allocatable           :: prim_index(:)
+  double precision, allocatable  :: shell_factor(:)
+  double precision, allocatable  :: exponent(:)
+  double precision, allocatable  :: coefficient(:)
+  character*(64)                 :: label
+ 
   ! Read the data from the TREX file
   ! ================================
 
@@ -109,6 +159,40 @@ program read_example
 
   do i=1,nucl_num
      print '(A4, 2X, F4.1,3(3X,F12.8))', nucl_label(i), nucl_charge(i), nucl_coord(1:3,i)
+  end do
+
+
+  info = trexio_get_basis_type(trex_file, label)
+  call check_success(info, 'Unable to get basis type')
+  print *, 'Basis type: ', trim(label)
+
+  info = trexio_get_basis_shell_num(trex_file, shell_num)
+  call check_success(info, 'Unable to get basis shell_num')
+
+  info = trexio_get_basis_prim_num(trex_file, prim_num)
+  call check_success(info, 'Unable to get basis prim_num')
+
+  allocate(shell_center(shell_num), shell_ang_mom(shell_num), shell_prim_num(shell_num), &
+       prim_index(shell_num), shell_factor(shell_num))
+  allocate(exponent(prim_num), coefficient(prim_num))
+
+  call read_basis(trex_file, shell_num, prim_num, shell_center, shell_ang_mom, &
+     shell_prim_num, prim_index, exponent, coefficient)
+
+  k=0
+  do i=1,shell_num
+     if (shell_center(i) /= k) then
+        k = shell_center(i)
+        info = trexio_element_name_of_symbol(trim(nucl_label(k)),label)
+        call check_success(info, 'Unable to get name of element :')
+        print *, ''
+        print *, trim(label)
+     end if
+     print *, shell_ang_mom(i), shell_prim_num(i)
+     do j=1,shell_prim_num(i)
+        print '(I3,X,E16.10,3X,E16.10)', j, &
+             exponent(prim_index(i)+j-1) , coefficient(prim_index(i)+j-1)
+     end do
   end do
 
 
