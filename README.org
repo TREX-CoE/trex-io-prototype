@@ -1,9 +1,9 @@
 #+TITLE: TREX I/O prototype library
 
 * Installation
-  This prototype uses the EZFIO library generator, which is provided as a
-  submodule. EZFIO requires the IRPF90 code generator, which is also provided as
-  a submodule.
+  This prototype uses  the EZFIO library generator,  which is provided
+  as a submodule.  EZFIO requires  the IRPF90 code generator, which is
+  also provided as a submodule.
 
   To clone this repository, use:
 
@@ -16,11 +16,12 @@ git clone --recurse-submodules https://github.com/TREX-CoE/trex-io-prototype
 ./configure.sh
   #+END_SRC
 
-  This step has created the file named =make.config=, which contains the
-  configuration for the Makefiles.aNow edit this file to adapt the compiler
-  and options to your computer.
+  This step has  created the file named  =make.config=, which contains
+  the configuration for the Makefiles.aNow edit this file to adapt the
+  compiler and options to your computer.
 
-  To modify the configuration of the library, modify the =trex.config= file.
+  To modify the configuration of the library, modify the =trex.config=
+  file.
 
   To build the library and the examples, run:
 
@@ -32,21 +33,21 @@ make
 
 ** Important
 
-   To run the examples, you need to set the the path to the =lib=
-   directory into your =LD_LIBRARY_PATH= environment variable, for
+   To run  the examples,  you need to  set the the  path to  the =lib=
+   directory  into your  =LD_LIBRARY_PATH=  environment variable,  for
    instance:
 
    #+BEGIN_SRC
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${PWD}/lib
    #+END_SRC
-
+   
 * Conventions
 
 ** General
 
    - All data is stored in atomic units.
    - All the names are given in singular
-   - The =num= suffix denotes the number. For example =apple_num= is
+   - The =num= suffix  denotes the number. For  example =apple_num= is
      the number of apples
 
 ** TODO Atomic orbitals (AOs)
@@ -54,18 +55,22 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${PWD}/lib
 *** TODO Gaussian orbitals
 
     The AOs can be expressed in spherical or in cartesian coordinates.
-    They are stored as shells, and then the full AO basis can be
-    expanded according to the fixed orders of the the radial functions.
+    They  are stored  as shells,  and then  the full  AO basis  can be
+    expanded  according  to  the  fixed   orders  of  the  the  radial
+    functions.
 
-    \[ chi_k(r_k,\theta_k,\phi_k) = \mathcal{N}_k Y^k_{lm}(\theta_k,\phi_k)\, \sum_i p_{ik} \exp(-\alpha_{ik} r_k^2) \]
+    \[ chi_k(r_k,\theta_k,\phi_k) = \mathcal{N}_k
+    Y^k_{lm}(\theta_k,\phi_k)\, \sum_i p_{ik} \exp(-\alpha_{ik} r_k^2)
+    \]
 
-    \[ chi_k(x_k,y_k,z_k) = \mathcal{N}_k x_k^a\, y_k^b\, z_k^c\, \sum_i p_{ik} \exp(-\alpha_{ik} (x_k^2+y_k^2+z_k^2) ) \]
+    \[ chi_k(x_k,y_k,z_k) = \mathcal{N}_k x_k^a\, y_k^b\, z_k^c\,
+    \sum_i p_{ik} \exp(-\alpha_{ik} (x_k^2+y_k^2+z_k^2) ) \]
 
-    where $r_k, \theta_k, \phi_k$ and $x_k, y_k, z_k$ are expressed
+    where $r_k,  \theta_k, \phi_k$ and  $x_k, y_k, z_k$  are expressed
     with respect to the center of the AO.
 
     By definition, AOs are centered on nuclei. To enable the centering
-    of AOs in arbitrary positions, one can define dummy atoms in the
+    of AOs in  arbitrary positions, one can define dummy  atoms in the
     =nuclei= section.
 
 ** TODO Molecular orbitals (MOs)
@@ -73,7 +78,6 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${PWD}/lib
    The MOs are expanded on the /normalized/ atomic basis set:
 
    \[ \varphi_i(r) = \sum_k c_{ki} \chi_k(r) \]
-
 
 * Helper functions
   
@@ -91,12 +95,19 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${PWD}/lib
     
 ** Spherical to cartesian coordinates transformation
    
-   The transformation matrix from the AO basis expressed in spherical
-   coordinates to the AO basis expressed in cartesian coordinates can
+   The transformation matrix from the  AO basis expressed in spherical
+   coordinates to the AO basis  expressed in cartesian coordinates can
    be retrieved, as well as its pseudo-inverse.
    
 * Acknowledgments
 
-![European flag](https://trex-coe.eu/sites/default/files/inline-images/euflag.jpg)
-[TREX: Targeting Real Chemical Accuracy at the Exascale](https://trex-coe.eu) project has received funding from the European Union’s Horizon 2020 - Research and Innovation program - under grant agreement no. 952165. The content of this document does not represent the opinion of the European Union, and the European Union is not responsible for any use that might be made of such content.
+![European
+flag](https://trex-coe.eu/sites/default/files/inline-images/euflag.jpg)
+[TREX:     Targeting     Real     Chemical     Accuracy     at     the
+Exascale](https://trex-coe.eu) project  has received funding  from the
+European  Union’s Horizon  2020 -  Research and  Innovation program  -
+under grant agreement  no. 952165.  The content of  this document does
+not  represent the  opinion of  the European  Union, and  the European
+Union  is not  responsible for  any  use that  might be  made of  such
+content.
 
