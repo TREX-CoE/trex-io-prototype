@@ -1,4 +1,6 @@
-#+TITLE: TREX I/O prototype library
+#+TITLE: TREX I/O library
+#+EXPORT_FILE_NAME: doc/index.html
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 
 * Installation
   This prototype uses  the EZFIO library generator,  which is provided
@@ -32,107 +34,258 @@ make
   and the library will be built in the =lib/= directory.
 
   #+BEGIN_IMPORTANT
-   To run  the examples,  you need to  set the the  path to  the =lib=
-   directory  into your  =LD_LIBRARY_PATH=  environment variable,  for
-   instance:
+  To run  the examples,  you need to  set the the  path to  the =lib=
+  directory  into your  =LD_LIBRARY_PATH=  environment variable,  for
+  instance:
   #+END_IMPORTANT
 
-   #+BEGIN_SRC
+  #+BEGIN_SRC
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${PWD}/lib
-   #+END_SRC
-   
+  #+END_SRC
+
 * Conventions
 
-** General
+  - All data is stored in atomic units.
+  - All the words used are given in singular
+  - The ~num~ suffix  denotes the number. For  example ~apple_num~ is
+    the number of apples
+  - All dimensioning variables should be 64-bit integers (~integer*8~
+    in Fortran)
+  - All variables corresponding  to an address in an  array should be
+    64-bit integers
 
-   - All data is stored in atomic units.
-   - All the words used are given in singular
-   - The =num= suffix  denotes the number. For  example =apple_num= is
-     the number of apples
-   - All dimensioning variables should be 64-bit integers (=integer*8=
-     in Fortran)
-   - All variables corresponding  to an address in an  array should be
-     64-bit integers
+* Metadata
 
-** Atomic orbitals (AOs)
+  #+BEGIN_SRC f90 :tangle trex.config
+metadata
+  description          character*(256)
+  code_num             integer
+  code                 character*(64)  (metadata_code_num)
+  author_num           integer
+  author               character*(64)  (metadata_author_num)
+  #+END_SRC
 
-    By definition, AOs are centered on nuclei. To enable the centering
-    of AOs in  arbitrary positions, one can define dummy  atoms in the
-    =nuclei= section.
+  | ~description~ | A free text to describe the content of the file                      |
+  | ~code_num~    | Number of codes used to build the current file                       |
+  | ~code~        | List of codes used to build the file. All codes are listed only once |
+  | ~author_num~  | Number of authors of the file                                        |
+  | ~author~      | List of authors of the file. All authors are listed only once        |
 
-    The AOs can be expressed in spherical or in cartesian coordinates,
-    and are stored  as shells.
+* Electrons
 
-    \[ chi_k(r_k,\theta_k,\phi_k) = \mathcal{N}_k
-       Y^k_{lm}(\theta_k,\phi_k)\, R(r_k)
-    \]
+  #+BEGIN_SRC f90 :tangle trex.config
+electron
+  up_num               integer*8
+  dn_num               integer*8
+  #+END_SRC
 
-    \[ chi_k(x_k,y_k,z_k) = \mathcal{N}_k x_k^a\, y_k^b\, z_k^c\,
-       R(x_k,y_k,z_k) ) \]
+  | ~up_num~ | Number of up-spin electrons   |
+  | ~dn_num~ | Number of down-spin electrons |
 
-    where $r_k,  \theta_k, \phi_k$ and  $x_k, y_k, z_k$  are expressed
-    with respect to the center of the AO.
-    
-    $\mathcal{N}_k$  is a  multiplicative constant,  which can  be the
-    normalization coefficient of the AO.
+* Nuclei
 
-    $R(r_k)$ is a spherically symmetric function describing the radial
-    behavior of the AO (Gaussian or Slater). 
+  #+BEGIN_SRC f90 :tangle trex.config
+nucleus
+  num                  integer*8
+  charge               double precision   (nucleus_num)
+  coord                double precision   (3,nucleus_num)
+  label                character*(64)     (nucleus_num)
+  point_group          character*(64)
 
-    $\Y^k_{lm}$ are the real spherical harmonics, as expressed [[https://en.wikipedia.org/wiki/Table_of_spherical_harmonics][here]].
+  #+END_SRC
 
-    The full AO basis can be expanded according to the fixed orders of
-    angular functions. For real spherical harmonics, the order is $-l,
-    \dots, 0,  \dots, l$.  For cartesian functions,  the order  is the
-    alphanumeric order of the string built as =a*"x"+b*"y"+c*"z"=. For
-    instance the polynomial $x^3yz^2$ is expressed as ="xxxyzz"=.
+  | ~num~         | Number of nuclei                               |
+  | ~charge~      | Atomic charge of each nucleus                  |
+  | ~coord~       | XYZ coordinates of the nuclei, in atomic units |
+  | ~label~       | Text label for each nucleus                    |
+  | ~point_group~ | Symmetry point-group of the current system     |
 
-    
-*** Gaussian orbitals
+* Effective core potentials
 
-    With Gaussian orbitals, the radial part is expressed as
+  #+BEGIN_SRC f90 :tangle trex.config
+ecp
+  lmax_p1              integer          (nucleus_num)
+  z_core               integer          (nucleus_num)
+  local_n              integer          (nucleus_num)
+  local_n_max          integer
+  local_exponent       double precision (ecp_local_n_max,nucleus_num)
+  local_coef           double precision (ecp_local_n_max,nucleus_num)
+  local_power          integer          (ecp_local_n_max,nucleus_num)
+  non_local_n          integer          (nucleus_num)
+  non_local_n_max      integer
+  non_local_exponent   double precision (ecp_non_local_n_max,nucleus_num)
+  non_local_coef       double precision (ecp_non_local_n_max,nucleus_num)
+  non_local_power      integer          (ecp_non_local_n_max,nucleus_num)
 
-    \[ R(r_k) = \sum_i p_{ik} \exp(-\alpha_{ik} r_k^2) \]
+  #+END_SRC
 
-    \[ R(r_k) = \sum_i p_{ik} \exp(-\alpha_{ik} (x_k^2+y_k^2+z_k^2) ) \]
+  | ~lmax_p1~            | $l_{\max}+1$, where $l_{\max}$ is the highest angular momentum in the core orbitals being removed |
+  | ~z_core~             | Number of electrons to be removed (even number)                                                   |
+  | ~local_n~            | Number of Gaussians used for the local component of the potential                                 |
+  | ~local_n_max~        | Maximum among the values of ~local_n                                                              |
+  | ~local_coef~         | Coefficients associated with the Gaussians in the local component                                 |
+  | ~local_power~        | Powers of $r$ associated with the Gaussians in the local component                                |
+  | ~local_exponent~     | Exponents of the Gaussians in the local component                                                 |
+  | ~non_local_n~        | Number of Gaussians used for the non-local component of the potential                             |
+  | ~non_local_n_max~    | Maximum among the values of ~non_local_n~                                                         |
+  | ~non_local_coef~     | Coefficients associated with the Gaussians in the non-local component                             |
+  | ~non_local_power~    | Powers of $r$ associated with the Gaussians in the non-local component                            |
+  | ~non_local_exponent~ | Exponents of the Gaussians in the non-local component                                             |
+
+* Basis set
+
+  By definition, atomic orbitals (AOs) are centered on the nuclei.  To
+  enable the centering  of AOs in arbitrary positions,  one can define
+  dummy atoms in the ~nuclei~ section.
+
+  The AOs can be expressed in spherical or in cartesian coordinates,
+  and are stored  as shells.
+
+  \[
+  \chi_k(r_k,\theta_k,\phi_k) = \mathcal{N}_k Y^k_{lm}(\theta_k,\phi_k)\, R(r_k)
+  \]
+
+  \[
+  \chi_k(x_k,y_k,z_k) = \mathcal{N}_k x_k^a\, y_k^b\, z_k^c\, R(x_k,y_k,z_k) )
+  \]
+
+  where $r_k,  \theta_k, \phi_k$ and  $x_k, y_k, z_k$  are expressed
+  with respect to the center of the AO.
+
+  $\mathcal{N}_k$  is a  multiplicative constant,  which can  be the
+  normalization coefficient of the AO.
+
+  $R(r_k)$ is a spherically symmetric function describing the radial
+  behavior of the AO (Gaussian or Slater).
+
+  $\Y^k_{lm}$ are the real spherical harmonics, as expressed [[https://en.wikipedia.org/wiki/Table_of_spherical_harmonics][here]].
+
+  The full AO basis can be expanded according to the fixed orders of
+  angular functions. For real spherical harmonics, the order is $-l,
+  \dots, 0,  \dots, l$.  For cartesian functions,  the order  is the
+  alphanumeric order of the string built as ~a*"x"+b*"y"+c*"z"~. For
+  instance the polynomial $x^3yz^2$ is expressed as ~"xxxyzz"~.
+
+  With Gaussian orbitals, the radial part is expressed as
+
+  \[ R(r_k) = \sum_i p_{ik} \exp(-\alpha_{ik} r_k^2) \]
+
+  \[ R(r_k) = \sum_i p_{ik} \exp(-\alpha_{ik} (x_k^2+y_k^2+z_k^2) ) \]
 
 
-*** Slater orbitals
+  With Slater orbitals, the radial part is expressed as
 
-    With Slater orbitals, the radial part is expressed as
+  \[ R(r_k) = r_k^n \sum_i p_{ik} \exp(-\zeta_{ik} r_k) \]
 
-    \[ R(r_k) = r_k^n \sum_i p_{ik} \exp(-\zeta_{ik} r_k) \]
-
-    \[ R(r_k) = (x_k^2+y_k^2+z_k^2)^{n/2} \sum_i p_{ik}
+  \[ R(r_k) = (x_k^2+y_k^2+z_k^2)^{n/2} \sum_i p_{ik}
                    \exp(-\zeta_{ik} (x_k^2+y_k^2+z_k^2)^{1/2} ) \]
 
+  #+BEGIN_SRC f90 :tangle trex.config
+basis
+  type                 character*(64)
+  cartesian            logical
+  shell_num            integer*8
+  shell_factor         double precision     (basis_shell_num)
+  shell_center         integer*8            (basis_shell_num)
+  shell_ang_mom        integer              (basis_shell_num)
+  shell_prim_num       integer*8            (basis_shell_num)
+  prim_index           integer*8            (basis_shell_num)
+  prim_num             integer*8
+  exponent             double precision     (basis_prim_num)
+  coefficient          double precision     (basis_prim_num)
+  num                  integer
+  #+END_SRC
 
-** TODO Molecular orbitals (MOs)
+* One-electron integrals on the basis set
 
-   The MOs are expanded on the /normalized/ atomic basis set:
+  #+BEGIN_SRC f90 :tangle trex.config
+basis_1e_int
+  overlap            double precision (basis_num,basis_num)
+  kinetic            double precision (basis_num,basis_num)
+  potential          double precision (basis_num,basis_num)
+  ecp_local          double precision (basis_num,basis_num)
+  ecp_non_local      double precision (basis_num,basis_num)
+  core_hamiltonian   double precision (basis_num,basis_num)
 
-   \[ \varphi_i(r) = \sum_k c_{ki} \chi_k(r) \]
+  #+END_SRC
+
+* Two-electron integrals on the basis set
+
+  #+BEGIN_SRC f90 :tangle trex.config
+basis_2e_int
+  eri_num            integer
+  eri_indices        integer          (4,basis_2e_int_eri_num)
+  eri_values         double precision (basis_2e_int_eri_num)
+  eri_lr_num         integer
+  eri_lr_indices     integer          (4,basis_2e_int_eri_lr_num)
+  eri_lr_values      double precision (basis_2e_int_eri_lr_num)
+
+  #+END_SRC
+
+* Molecular orbitals
+
+  The MOs are expanded on the /normalized/ atomic basis set:
+
+  \[ \varphi_i(r) = \sum_k c_{ki} \chi_k(r) \]
+
+  #+BEGIN_SRC f90 :tangle trex.config
+mo
+  type                 character*(64)
+  num                  integer
+  coef                 double precision   (basis_num,mo_num)
+  class                character*(64)     (mo_num)
+  symmetry             character*(64)     (mo_num)
+  occupation           double precision   (mo_num)
+
+  #+END_SRC
+
+* One-electron integrals in the MO basis
+
+  #+BEGIN_SRC f90 :tangle trex.config
+mo_1e_int
+  kinetic            double precision (mo_num,mo_num)
+  potential          double precision (mo_num,mo_num)
+  ecp_local          double precision (mo_num,mo_num)
+  ecp_non_local      double precision (mo_num,mo_num)
+  core_hamiltonian   double precision (mo_num,mo_num)
+
+  #+END_SRC
+
+* Two-electron integrals in the MO basis
+
+  #+BEGIN_SRC f90 :tangle trex.config
+mo_2e_int
+  eri_num            integer
+  eri_indices        integer          (4,mo_2e_int_eri_num)
+  eri_values         double precision (mo_2e_int_eri_num)
+  eri_lr_num         integer
+  eri_lr_indices     integer          (4,mo_2e_int_eri_lr_num)
+  eri_lr_values      double precision (mo_2e_int_eri_lr_num)
+
+  #+END_SRC
 
 * Helper functions
-  
+
 ** Periodic table
 
-*** =trexio_element_name_of_symbol=
+*** ~trexio_element_name_of_symbol~
     Returns the name of an element from its symbol
 
-*** =trexio_element_number_of_symbol=
+*** ~trexio_element_number_of_symbol~
     Returns the atomic number of an element from its symbol
 
-*** =trexio_element_symbol_of_number=
+*** ~trexio_element_symbol_of_number~
     Returns the symbol of an element from its atomic number
 
-    
+
 ** Spherical to cartesian coordinates transformation
-   
+
    The transformation matrix from the  AO basis expressed in spherical
    coordinates to the AO basis  expressed in cartesian coordinates can
    be retrieved, as well as its pseudo-inverse.
-   
+
+
+   ----
 * Acknowledgments
 
 [[https://trex-coe.eu/sites/default/files/inline-images/euflag.jpg]]
@@ -142,4 +295,3 @@ Research and  Innovation program -  under grant agreement  no. 952165.
 The content  of this document  does not  represent the opinion  of the
 European Union, and the European Union  is not responsible for any use
 that might be made of such content.
-

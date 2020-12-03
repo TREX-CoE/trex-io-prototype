@@ -147,7 +147,7 @@ subroutine read_basis(trex_file, basis_filename)
   end do
 
   buffer = 'Gaussian'
-  info = trexio_set_basis_type(trex_file, buffer(1:32))
+  info = trexio_set_basis_type(trex_file, buffer)
   call check_success(info, 'Unable to set basis type')
 
   info = trexio_set_basis_shell_num(trex_file, shell_num)

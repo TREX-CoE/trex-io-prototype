@@ -64,24 +64,29 @@ def read_config(filename):
 
 def generate_func(group, item, t):
     result_scalar = """
-integer function {0}(trex_file, value) result(info)
+integer function {0}(trex_file, val) result(info)
     implicit none
     integer*8, intent(in) :: trex_file
-    {1}, intent(in)       :: value
-    call {2}(value)
+    {1}, intent({2})       :: val
+    call {3}(val)
     info = 0
 end function {0}
 """
 
     result_array = """
-integer function {0}(trex_file,value) result(info)
+integer function {0}(trex_file,val) result(info)
     implicit none
     integer*8, intent(in) :: trex_file
-    {1}, intent(in) :: value{2}
-    call {3}(value)
+    {1}, intent({2}) :: val{3}
+    call {4}(val)
     info = 0
 end function {0}
 """
+
+    if t == "set":
+      inout = "in"
+    elif t == "get":
+      inout = "out"
 
     func_name = "trexio_{0}_{1}_{2}".format(t, group, item[0])
     ezfio_name = func_name.replace("trexio","ezfio")
@@ -89,39 +94,45 @@ end function {0}
     dim = "(" + ",".join([":" for i in item[2]]) + ")"
 
     if dim == "()":
-        return result_scalar.format(func_name, typ, ezfio_name)
+        return result_scalar.format(func_name, typ, inout, ezfio_name)
     else:
-        return result_array.format(func_name, typ, dim, ezfio_name)
+        return result_array.format(func_name, typ, inout, dim, ezfio_name)
 
 
 
 def generate_interface(group, item, t):
     result_scalar = """
   interface
-    integer function {0}(trex_file,value)
+    integer function {0}(trex_file,val)
       integer*8, intent(in) :: trex_file
-      {1}, intent(in) :: value
+      {1}, intent({2}) :: val
     end function {0}
   end interface
 """
 
     result_array = """
   interface
-    integer function {0}(trex_file,value)
+    integer function {0}(trex_file,val)
       integer*8, intent(in) :: trex_file
-      {1}, intent(in) :: value{2}
+      {1}, intent({2}) :: val{3}
     end function {0}
   end interface
 """
 
+    if t == "set":
+      inout = "in"
+    elif t == "get":
+      inout = "out"
+
     func_name = "trexio_{0}_{1}_{2}".format(t, group, item[0])
-    typ = item[1]
+
     dim = "(" + ",".join([":" for i in item[2]]) + ")"
 
+    typ = item[1]
     if dim == "()":
-        return result_scalar.format(func_name, typ)
+        return result_scalar.format(func_name, typ, inout)
     else:
-        return result_array.format(func_name, typ, dim)
+        return result_array.format(func_name, typ, inout, dim)
 
 
 
