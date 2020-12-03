@@ -5,8 +5,8 @@ subroutine check_success(info,message)
   character*(*)       :: message
 
   if (info /= TREXIO_SUCCESS) then
-     print *, message
-     stop info
+     print *, info, message
+     stop -1
   end if
 end subroutine check_success
 
@@ -20,7 +20,7 @@ subroutine read_xyz(trex_file, xyz_filename)
 
   integer*8                      :: nucl_num         ! Number of nuclei
   character*(256)                :: title            ! Title of the file
-  character*(64), allocatable    :: nucl_label(:)    ! Atom labels
+  character*(32), allocatable    :: nucl_label(:)    ! Atom labels
   real*8, allocatable            :: nucl_charge(:)   ! Nuclear charges
   real*8, allocatable            :: nucl_coord(:,:)  ! Nuclear coordinates
   integer*8                      :: alpha_num        ! Number of alpha electrons
@@ -90,7 +90,7 @@ subroutine read_basis(trex_file, basis_filename)
   character*(128), intent(in)    :: basis_filename
 
   integer*8                      :: nucl_num         ! Number of nuclei
-  character*(64), allocatable    :: nucl_label(:)    ! Atom labels
+  character*(32), allocatable    :: nucl_label(:)    ! Atom labels
 
   integer*8                      :: shell_num, prim_num
   integer*8, allocatable         :: shell_center(:)
@@ -100,7 +100,7 @@ subroutine read_basis(trex_file, basis_filename)
   double precision, allocatable  :: shell_factor(:)
   double precision, allocatable  :: exponent(:)
   double precision, allocatable  :: coefficient(:)
-  character*(64)                 :: label
+  character*(32)                 :: label
   character*(80)                 :: buffer
   integer                        :: i,j,k,n_shell,n_prim
   integer                        :: info
@@ -247,7 +247,7 @@ program write_example
   character*(128)                :: xyz_filename     ! Name of the xyz file
   character*(128)                :: basis_filename   ! Name of the basis file
   integer*8                      :: trex_file        ! Handle for the TREX file
-  character*(64)                 :: username
+  character*(32)                 :: username
   integer                        :: i
   integer                        :: info
   character*(*), parameter       :: trex_filename = 'trex_file'

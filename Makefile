@@ -20,6 +20,11 @@ OCaml/ezfio.ml: EZFIO/Ocaml/ezfio.ml
 Bash/ezfio.sh: EZFIO/Bash/ezfio.sh
 	cp $^ $@
 
+doc:
+	./make_doc.sh
+
 clean:
 	$(MAKE) -C src clean
+	$(MAKE) -C EZFIO clean
 	$(MAKE) -C examples clean
+	$(RM) -r lib/*

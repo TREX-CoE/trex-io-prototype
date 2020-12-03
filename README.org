@@ -1,6 +1,7 @@
 #+TITLE: TREX I/O library
-#+EXPORT_FILE_NAME: doc/index.html
+#+EXPORT_FILE_NAME: docs/index.html
 #+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
+
 
 * Installation
   This prototype uses  the EZFIO library generator,  which is provided
@@ -39,9 +40,16 @@ make
   instance:
   #+END_IMPORTANT
 
-  #+BEGIN_SRC
+  #+BEGIN_SRC bash
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${PWD}/lib
   #+END_SRC
+  
+To create the =config.trex= file from this file, run
+
+  #+BEGIN_SRC elisp :results none
+(org-babel-tangle)
+  #+END_SRC
+
 
 * Conventions
 
@@ -56,7 +64,7 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${PWD}/lib
 
 * Metadata
 
-  #+BEGIN_SRC f90 :tangle trex.config
+  #+BEGIN_SRC org :tangle trex.config
 metadata
   description          character*(256)
   code_num             integer
@@ -73,7 +81,7 @@ metadata
 
 * Electrons
 
-  #+BEGIN_SRC f90 :tangle trex.config
+  #+BEGIN_SRC org :tangle trex.config
 electron
   up_num               integer*8
   dn_num               integer*8
@@ -84,13 +92,13 @@ electron
 
 * Nuclei
 
-  #+BEGIN_SRC f90 :tangle trex.config
+  #+BEGIN_SRC org :tangle trex.config
 nucleus
   num                  integer*8
   charge               double precision   (nucleus_num)
   coord                double precision   (3,nucleus_num)
-  label                character*(64)     (nucleus_num)
-  point_group          character*(64)
+  label                character*(32)     (nucleus_num)
+  point_group          character*(32)
 
   #+END_SRC
 
@@ -102,7 +110,7 @@ nucleus
 
 * Effective core potentials
 
-  #+BEGIN_SRC f90 :tangle trex.config
+  #+BEGIN_SRC org :tangle trex.config
 ecp
   lmax_p1              integer          (nucleus_num)
   z_core               integer          (nucleus_num)
@@ -180,9 +188,9 @@ ecp
   \[ R(r_k) = (x_k^2+y_k^2+z_k^2)^{n/2} \sum_i p_{ik}
                    \exp(-\zeta_{ik} (x_k^2+y_k^2+z_k^2)^{1/2} ) \]
 
-  #+BEGIN_SRC f90 :tangle trex.config
+  #+BEGIN_SRC org :tangle trex.config
 basis
-  type                 character*(64)
+  type                 character*(32)
   cartesian            logical
   shell_num            integer*8
   shell_factor         double precision     (basis_shell_num)
@@ -198,7 +206,7 @@ basis
 
 * One-electron integrals on the basis set
 
-  #+BEGIN_SRC f90 :tangle trex.config
+  #+BEGIN_SRC org :tangle trex.config
 basis_1e_int
   overlap            double precision (basis_num,basis_num)
   kinetic            double precision (basis_num,basis_num)
@@ -211,7 +219,7 @@ basis_1e_int
 
 * Two-electron integrals on the basis set
 
-  #+BEGIN_SRC f90 :tangle trex.config
+  #+BEGIN_SRC org :tangle trex.config
 basis_2e_int
   eri_num            integer
   eri_indices        integer          (4,basis_2e_int_eri_num)
@@ -228,20 +236,20 @@ basis_2e_int
 
   \[ \varphi_i(r) = \sum_k c_{ki} \chi_k(r) \]
 
-  #+BEGIN_SRC f90 :tangle trex.config
+  #+BEGIN_SRC org :tangle trex.config
 mo
-  type                 character*(64)
+  type                 character*(32)
   num                  integer
   coef                 double precision   (basis_num,mo_num)
-  class                character*(64)     (mo_num)
-  symmetry             character*(64)     (mo_num)
+  class                character*(32)     (mo_num)
+  symmetry             character*(32)     (mo_num)
   occupation           double precision   (mo_num)
 
   #+END_SRC
 
 * One-electron integrals in the MO basis
 
-  #+BEGIN_SRC f90 :tangle trex.config
+  #+BEGIN_SRC org :tangle trex.config
 mo_1e_int
   kinetic            double precision (mo_num,mo_num)
   potential          double precision (mo_num,mo_num)
@@ -253,7 +261,7 @@ mo_1e_int
 
 * Two-electron integrals in the MO basis
 
-  #+BEGIN_SRC f90 :tangle trex.config
+  #+BEGIN_SRC org :tangle trex.config
 mo_2e_int
   eri_num            integer
   eri_indices        integer          (4,mo_2e_int_eri_num)

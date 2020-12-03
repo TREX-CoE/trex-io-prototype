@@ -5,8 +5,8 @@ subroutine check_success(info,message)
   character*(*)       :: message
 
   if (info /= TREXIO_SUCCESS) then
-     print *, message
-     stop info
+     print *, info, message
+     stop -1
   end if
 end subroutine check_success
 
@@ -49,7 +49,7 @@ subroutine read_nuclei(trex_file, nucl_num, nucl_coord, nucl_charge, nucl_label)
   integer*8, intent(in)          :: nucl_num
   double precision, intent(out)  :: nucl_coord(3,nucl_num)
   double precision, intent(out)  :: nucl_charge(nucl_num)
-  character*(64), intent(out)    :: nucl_label(nucl_num)
+  character*(32), intent(out)    :: nucl_label(nucl_num)
 
   integer :: info
 
@@ -107,7 +107,7 @@ program read_example
   implicit none
   integer*8                      :: nucl_num         ! Number of nuclei
   character*(256)                :: title            ! Title of the file
-  character*(64), allocatable    :: nucl_label(:)    ! Atom labels
+  character*(32), allocatable    :: nucl_label(:)    ! Atom labels
   real*8, allocatable            :: nucl_charge(:)   ! Nuclear charges
   real*8, allocatable            :: nucl_coord(:,:)  ! Nuclear coordinates
   integer*8                      :: alpha_num        ! Number of alpha electrons
@@ -127,8 +127,8 @@ program read_example
   double precision, allocatable  :: shell_factor(:)
   double precision, allocatable  :: exponent(:)
   double precision, allocatable  :: coefficient(:)
-  character*(64)                 :: bastype
-  character*(64)                 :: label
+  character*(32)                 :: bastype
+  character*(32)                 :: label
   character, parameter           :: ang_mom(0:6) = (/ 'S', 'P', 'D', 'F', 'G', 'H', 'I' /)
 
   ! Read the data from the TREX file
@@ -165,9 +165,7 @@ program read_example
 
 
   bastype=''
-  print *, bastype
   info = trexio_get_basis_type(trex_file, bastype)
-  print *, bastype
   call check_success(info, 'Unable to get basis type')
   print *, 'Basis type: ', trim(bastype)
 
@@ -195,7 +193,7 @@ program read_example
      end if
      print *, ang_mom(shell_ang_mom(i)), shell_prim_num(i)
      do j=1,shell_prim_num(i)
-        print '(I3,X,E16.10,3X,E16.10)', j, &
+        print '(I3,X,E16.8,3X,E16.8)', j, &
              exponent(prim_index(i)+j-1) , coefficient(prim_index(i)+j-1)
      end do
   end do

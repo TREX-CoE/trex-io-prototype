@@ -25,4 +25,4 @@ test:
 	./test.sh
 
 clean:
-	rm -rf trexio.o trexio.f90 trexio.mod $(EXE) trex_file
+	rm -rf trexio.o trexio.f90 trexio.mod $(EXE) trex_file 
