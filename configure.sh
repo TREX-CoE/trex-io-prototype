@@ -13,7 +13,7 @@ TREXIO_ROOT=$PWD
 IRPF90=\$(TREXIO_ROOT)/irpf90/bin/irpf90
 AR=$AR
 
-FC=gfortran -g
+FC=gfortran -g -ffree-line-length-none
 FFLAGS=-fPIC  -fcheck=all -Waliasing -Wampersand -Wconversion -Wsurprising -Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Wuninitialized  -fbacktrace -ffpe-trap=zero,overflow,underflow -finit-real=nan
 
 %.o: %.f90
