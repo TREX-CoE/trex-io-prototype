@@ -21,6 +21,5 @@ fortran_read: fortran_read.f90 trexio.o
 fortran_write: fortran_write.f90 trexio.o
 	$(FC) -o $@ $^ -L../lib -ltrexio -lz
 
-
 clean:
 	rm -rf trexio.o trexio.f90 trexio.mod $(EXE) trex_file
