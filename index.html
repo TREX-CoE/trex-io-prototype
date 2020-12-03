@@ -1,0 +1,879 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2020-12-03 Thu 18:26 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TREX I/O library</title>
+<meta name="generator" content="Org mode" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/readtheorg.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/js/readtheorg.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">TREX I/O library</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org71a335a">1. Installation</a></li>
+<li><a href="#org80a10c3">2. Conventions</a></li>
+<li><a href="#org77d0939">3. Metadata</a></li>
+<li><a href="#org94bef7e">4. Electrons</a></li>
+<li><a href="#org4975730">5. Nuclei</a></li>
+<li><a href="#orgb06b0ad">6. Effective core potentials</a></li>
+<li><a href="#org9a21a34">7. Basis set</a></li>
+<li><a href="#orgddaa7e8">8. One-electron integrals on the basis set</a></li>
+<li><a href="#org8c94a05">9. Two-electron integrals on the basis set</a></li>
+<li><a href="#orgabeeb9d">10. Molecular orbitals</a></li>
+<li><a href="#org61659ec">11. One-electron integrals in the MO basis</a></li>
+<li><a href="#orgb2b6ae2">12. Two-electron integrals in the MO basis</a></li>
+<li><a href="#orge69d0b2">13. Helper functions</a>
+<ul>
+<li><a href="#org9e17477">13.1. Periodic table</a>
+<ul>
+<li><a href="#org115f165">13.1.1. <code>trexio_element_name_of_symbol</code></a></li>
+<li><a href="#orgc9fa92c">13.1.2. <code>trexio_element_number_of_symbol</code></a></li>
+<li><a href="#org5613fde">13.1.3. <code>trexio_element_symbol_of_number</code></a></li>
+</ul>
+</li>
+<li><a href="#orge159f61">13.2. Spherical to cartesian coordinates transformation</a></li>
+</ul>
+</li>
+<li><a href="#org67bfb2a">14. Acknowledgments</a></li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-org71a335a" class="outline-2">
+<h2 id="org71a335a"><span class="section-number-2">1</span> Installation</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+This prototype uses  the EZFIO library generator,  which is provided
+as a submodule.  EZFIO requires  the IRPF90 code generator, which is
+also provided as a submodule.
+</p>
+
+<p>
+To clone this repository, use:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">git clone --recurse-submodules https://github.com/TREX-CoE/trex-io-prototype
+</pre>
+</div>
+
+<p>
+then run
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">./configure.sh
+</pre>
+</div>
+
+<p>
+This step has  created the file named  <code>make.config</code>, which contains
+the configuration for the Makefiles.aNow edit this file to adapt the
+compiler and options to your computer.
+</p>
+
+<p>
+To modify the configuration of the library, modify the <code>trex.config</code>
+file.
+</p>
+
+<p>
+To build the library and the examples, run:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">make
+</pre>
+</div>
+
+<p>
+and the library will be built in the <code>lib/</code> directory.
+</p>
+
+<div class="IMPORTANT">
+<p>
+To run  the examples,  you need to  set the the  path to  the <code>lib</code>
+directory  into your  <code>LD_LIBRARY_PATH</code>  environment variable,  for
+instance:
+</p>
+
+</div>
+
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #483d8b;">export</span> <span style="color: #a0522d;">LD_LIBRARY_PATH</span>=${<span style="color: #a0522d;">LD_LIBRARY_PATH</span>}:${<span style="color: #a0522d;">PWD</span>}/lib
+</pre>
+</div>
+
+<p>
+To create the <code>config.trex</code> file from this file, run
+</p>
+
+<div class="org-src-container">
+<pre class="src src-elisp">(org-babel-tangle)
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org80a10c3" class="outline-2">
+<h2 id="org80a10c3"><span class="section-number-2">2</span> Conventions</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li>All data is stored in atomic units.</li>
+<li>All the words used are given in singular</li>
+<li>The <code>num</code> suffix  denotes the number. For  example <code>apple_num</code> is
+the number of apples</li>
+<li>All dimensioning variables should be 64-bit integers (<code>integer*8</code>
+in Fortran)</li>
+<li>All variables corresponding  to an address in an  array should be
+64-bit integers</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org77d0939" class="outline-2">
+<h2 id="org77d0939"><span class="section-number-2">3</span> Metadata</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-org">metadata
+  description          character*(256)
+  code_num             integer
+  code                 character*(64)  (metadata_code_num)
+  author_num           integer
+  author               character*(64)  (metadata_author_num)
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><code>description</code></td>
+<td class="org-left">A free text to describe the content of the file</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>code_num</code></td>
+<td class="org-left">Number of codes used to build the current file</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>code</code></td>
+<td class="org-left">List of codes used to build the file. All codes are listed only once</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>author_num</code></td>
+<td class="org-left">Number of authors of the file</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>author</code></td>
+<td class="org-left">List of authors of the file. All authors are listed only once</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org94bef7e" class="outline-2">
+<h2 id="org94bef7e"><span class="section-number-2">4</span> Electrons</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+<pre class="src src-org">electron
+  up_num               integer*8
+  dn_num               integer*8
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><code>up_num</code></td>
+<td class="org-left">Number of up-spin electrons</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>dn_num</code></td>
+<td class="org-left">Number of down-spin electrons</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org4975730" class="outline-2">
+<h2 id="org4975730"><span class="section-number-2">5</span> Nuclei</h2>
+<div class="outline-text-2" id="text-5">
+<div class="org-src-container">
+<pre class="src src-org">nucleus
+  num                  integer*8
+  charge               double precision   (nucleus_num)
+  coord                double precision   (3,nucleus_num)
+  label                character*(32)     (nucleus_num)
+  point_group          character*(32)
+
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><code>num</code></td>
+<td class="org-left">Number of nuclei</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>charge</code></td>
+<td class="org-left">Atomic charge of each nucleus</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>coord</code></td>
+<td class="org-left">XYZ coordinates of the nuclei, in atomic units</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>label</code></td>
+<td class="org-left">Text label for each nucleus</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>point_group</code></td>
+<td class="org-left">Symmetry point-group of the current system</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-orgb06b0ad" class="outline-2">
+<h2 id="orgb06b0ad"><span class="section-number-2">6</span> Effective core potentials</h2>
+<div class="outline-text-2" id="text-6">
+<div class="org-src-container">
+<pre class="src src-org">ecp
+  lmax_p1              integer          (nucleus_num)
+  z_core               integer          (nucleus_num)
+  local_n              integer          (nucleus_num)
+  local_n_max          integer
+  local_exponent       double precision (ecp_local_n_max,nucleus_num)
+  local_coef           double precision (ecp_local_n_max,nucleus_num)
+  local_power          integer          (ecp_local_n_max,nucleus_num)
+  non_local_n          integer          (nucleus_num)
+  non_local_n_max      integer
+  non_local_exponent   double precision (ecp_non_local_n_max,nucleus_num)
+  non_local_coef       double precision (ecp_non_local_n_max,nucleus_num)
+  non_local_power      integer          (ecp_non_local_n_max,nucleus_num)
+
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><code>lmax_p1</code></td>
+<td class="org-left">\(l_{\max}+1\), where \(l_{\max}\) is the highest angular momentum in the core orbitals being removed</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>z_core</code></td>
+<td class="org-left">Number of electrons to be removed (even number)</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>local_n</code></td>
+<td class="org-left">Number of Gaussians used for the local component of the potential</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>local_n_max</code></td>
+<td class="org-left">Maximum among the values of ~local<sub>n</sub></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>local_coef</code></td>
+<td class="org-left">Coefficients associated with the Gaussians in the local component</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>local_power</code></td>
+<td class="org-left">Powers of \(r\) associated with the Gaussians in the local component</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>local_exponent</code></td>
+<td class="org-left">Exponents of the Gaussians in the local component</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>non_local_n</code></td>
+<td class="org-left">Number of Gaussians used for the non-local component of the potential</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>non_local_n_max</code></td>
+<td class="org-left">Maximum among the values of <code>non_local_n</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>non_local_coef</code></td>
+<td class="org-left">Coefficients associated with the Gaussians in the non-local component</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>non_local_power</code></td>
+<td class="org-left">Powers of \(r\) associated with the Gaussians in the non-local component</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>non_local_exponent</code></td>
+<td class="org-left">Exponents of the Gaussians in the non-local component</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org9a21a34" class="outline-2">
+<h2 id="org9a21a34"><span class="section-number-2">7</span> Basis set</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+By definition, atomic orbitals (AOs) are centered on the nuclei.  To
+enable the centering  of AOs in arbitrary positions,  one can define
+dummy atoms in the <code>nuclei</code> section.
+</p>
+
+<p>
+The AOs can be expressed in spherical or in cartesian coordinates,
+and are stored  as shells.
+</p>
+
+<p>
+\[
+  \chi_k(r_k,\theta_k,\phi_k) = \mathcal{N}_k Y^k_{lm}(\theta_k,\phi_k)\, R(r_k)
+  \]
+</p>
+
+<p>
+\[
+  \chi_k(x_k,y_k,z_k) = \mathcal{N}_k x_k^a\, y_k^b\, z_k^c\, R(x_k,y_k,z_k) )
+  \]
+</p>
+
+<p>
+where \(r_k,  \theta_k, \phi_k\) and  \(x_k, y_k, z_k\)  are expressed
+with respect to the center of the AO.
+</p>
+
+<p>
+\(\mathcal{N}_k\)  is a  multiplicative constant,  which can  be the
+normalization coefficient of the AO.
+</p>
+
+<p>
+\(R(r_k)\) is a spherically symmetric function describing the radial
+behavior of the AO (Gaussian or Slater).
+</p>
+
+<p>
+\(\Y^k_{lm}\) are the real spherical harmonics, as expressed <a href="https://en.wikipedia.org/wiki/Table_of_spherical_harmonics">here</a>.
+</p>
+
+<p>
+The full AO basis can be expanded according to the fixed orders of
+angular functions. For real spherical harmonics, the order is \(-l,
+  \dots, 0,  \dots, l\).  For cartesian functions,  the order  is the
+alphanumeric order of the string built as <code>a*"x"+b*"y"+c*"z"</code>. For
+instance the polynomial \(x^3yz^2\) is expressed as <code>"xxxyzz"</code>.
+</p>
+
+<p>
+With Gaussian orbitals, the radial part is expressed as
+</p>
+
+<p>
+\[ R(r_k) = \sum_i p_{ik} \exp(-\alpha_{ik} r_k^2) \]
+</p>
+
+<p>
+\[ R(r_k) = \sum_i p_{ik} \exp(-\alpha_{ik} (x_k^2+y_k^2+z_k^2) ) \]
+</p>
+
+
+<p>
+With Slater orbitals, the radial part is expressed as
+</p>
+
+<p>
+\[ R(r_k) = r_k^n \sum_i p_{ik} \exp(-\zeta_{ik} r_k) \]
+</p>
+
+<p>
+\[ R(r_k) = (x_k^2+y_k^2+z_k^2)^{n/2} \sum_i p_{ik}
+                   \exp(-\zeta_{ik} (x_k^2+y_k^2+z_k^2)^{1/2} ) \]
+</p>
+
+<div class="org-src-container">
+<pre class="src src-org">basis
+  type                 character*(32)
+  cartesian            logical
+  shell_num            integer*8
+  shell_factor         double precision     (basis_shell_num)
+  shell_center         integer*8            (basis_shell_num)
+  shell_ang_mom        integer              (basis_shell_num)
+  shell_prim_num       integer*8            (basis_shell_num)
+  prim_index           integer*8            (basis_shell_num)
+  prim_num             integer*8
+  exponent             double precision     (basis_prim_num)
+  coefficient          double precision     (basis_prim_num)
+  num                  integer
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgddaa7e8" class="outline-2">
+<h2 id="orgddaa7e8"><span class="section-number-2">8</span> One-electron integrals on the basis set</h2>
+<div class="outline-text-2" id="text-8">
+<div class="org-src-container">
+<pre class="src src-org">basis_1e_int
+  overlap            double precision (basis_num,basis_num)
+  kinetic            double precision (basis_num,basis_num)
+  potential          double precision (basis_num,basis_num)
+  ecp_local          double precision (basis_num,basis_num)
+  ecp_non_local      double precision (basis_num,basis_num)
+  core_hamiltonian   double precision (basis_num,basis_num)
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8c94a05" class="outline-2">
+<h2 id="org8c94a05"><span class="section-number-2">9</span> Two-electron integrals on the basis set</h2>
+<div class="outline-text-2" id="text-9">
+<div class="org-src-container">
+<pre class="src src-org">basis_2e_int
+  eri_num            integer
+  eri_indices        integer          (4,basis_2e_int_eri_num)
+  eri_values         double precision (basis_2e_int_eri_num)
+  eri_lr_num         integer
+  eri_lr_indices     integer          (4,basis_2e_int_eri_lr_num)
+  eri_lr_values      double precision (basis_2e_int_eri_lr_num)
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgabeeb9d" class="outline-2">
+<h2 id="orgabeeb9d"><span class="section-number-2">10</span> Molecular orbitals</h2>
+<div class="outline-text-2" id="text-10">
+<p>
+The MOs are expanded on the <i>normalized</i> atomic basis set:
+</p>
+
+<p>
+\[ \varphi_i(r) = \sum_k c_{ki} \chi_k(r) \]
+</p>
+
+<div class="org-src-container">
+<pre class="src src-org">mo
+  type                 character*(32)
+  num                  integer
+  coef                 double precision   (basis_num,mo_num)
+  class                character*(32)     (mo_num)
+  symmetry             character*(32)     (mo_num)
+  occupation           double precision   (mo_num)
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org61659ec" class="outline-2">
+<h2 id="org61659ec"><span class="section-number-2">11</span> One-electron integrals in the MO basis</h2>
+<div class="outline-text-2" id="text-11">
+<div class="org-src-container">
+<pre class="src src-org">mo_1e_int
+  kinetic            double precision (mo_num,mo_num)
+  potential          double precision (mo_num,mo_num)
+  ecp_local          double precision (mo_num,mo_num)
+  ecp_non_local      double precision (mo_num,mo_num)
+  core_hamiltonian   double precision (mo_num,mo_num)
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb2b6ae2" class="outline-2">
+<h2 id="orgb2b6ae2"><span class="section-number-2">12</span> Two-electron integrals in the MO basis</h2>
+<div class="outline-text-2" id="text-12">
+<div class="org-src-container">
+<pre class="src src-org">mo_2e_int
+  eri_num            integer
+  eri_indices        integer          (4,mo_2e_int_eri_num)
+  eri_values         double precision (mo_2e_int_eri_num)
+  eri_lr_num         integer
+  eri_lr_indices     integer          (4,mo_2e_int_eri_lr_num)
+  eri_lr_values      double precision (mo_2e_int_eri_lr_num)
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge69d0b2" class="outline-2">
+<h2 id="orge69d0b2"><span class="section-number-2">13</span> Helper functions</h2>
+<div class="outline-text-2" id="text-13">
+</div>
+<div id="outline-container-org9e17477" class="outline-3">
+<h3 id="org9e17477"><span class="section-number-3">13.1</span> Periodic table</h3>
+<div class="outline-text-3" id="text-13-1">
+</div>
+<div id="outline-container-org115f165" class="outline-4">
+<h4 id="org115f165"><span class="section-number-4">13.1.1</span> <code>trexio_element_name_of_symbol</code></h4>
+<div class="outline-text-4" id="text-13-1-1">
+<p>
+Returns the name of an element from its symbol
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc9fa92c" class="outline-4">
+<h4 id="orgc9fa92c"><span class="section-number-4">13.1.2</span> <code>trexio_element_number_of_symbol</code></h4>
+<div class="outline-text-4" id="text-13-1-2">
+<p>
+Returns the atomic number of an element from its symbol
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5613fde" class="outline-4">
+<h4 id="org5613fde"><span class="section-number-4">13.1.3</span> <code>trexio_element_symbol_of_number</code></h4>
+<div class="outline-text-4" id="text-13-1-3">
+<p>
+Returns the symbol of an element from its atomic number
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orge159f61" class="outline-3">
+<h3 id="orge159f61"><span class="section-number-3">13.2</span> Spherical to cartesian coordinates transformation</h3>
+<div class="outline-text-3" id="text-13-2">
+<p>
+The transformation matrix from the  AO basis expressed in spherical
+coordinates to the AO basis  expressed in cartesian coordinates can
+be retrieved, as well as its pseudo-inverse.
+</p>
+
+
+<p>
+-&#x2014;
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org67bfb2a" class="outline-2">
+<h2 id="org67bfb2a"><span class="section-number-2">14</span> Acknowledgments</h2>
+<div class="outline-text-2" id="text-14">
+<p>
+<img src="https://trex-coe.eu/sites/default/files/inline-images/euflag.jpg" alt="euflag.jpg" />
+<a href="https://trex-coe.eu">TREX: Targeting Real Chemical Accuracy at the Exascale</a>
+project has received funding from  the European Union’s Horizon 2020 -
+Research and  Innovation program -  under grant agreement  no. 952165.
+The content  of this document  does not  represent the opinion  of the
+European Union, and the European Union  is not responsible for any use
+that might be made of such content.
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Created: 2020-12-03 Thu 18:26</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
