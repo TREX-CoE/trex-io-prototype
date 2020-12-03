@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: make
-      run: make
+      run: ./configure.sh ; make
 
 
   test:
@@ -24,4 +24,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: make
-      run: make ; make -C examples test
+      run: ./configure.sh ;  make ; make -C examples test
