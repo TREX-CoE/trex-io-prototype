@@ -50,7 +50,6 @@ To create the =config.trex= file from this file, run
 (org-babel-tangle)
   #+END_SRC
 
-
 * Conventions
 
   - All data is stored in atomic units.
@@ -171,7 +170,7 @@ ecp
   The full AO basis can be expanded according to the fixed orders of
   angular functions. For real spherical harmonics, the order is $-l,
   \dots, 0,  \dots, l$.  For cartesian functions,  the order  is the
-  alphanumeric order of the string built as ~a*"x"+b*"y"+c*"z"~. For
+  alphanumeric order of the string built as ~a*"x"+b*"y"+c*"z"~ . For
   instance the polynomial $x^3yz^2$ is expressed as ~"xxxyzz"~.
 
   With Gaussian orbitals, the radial part is expressed as
@@ -272,6 +271,8 @@ mo_2e_int
 
   #+END_SRC
 
+* TODO Determinants
+* TODO Configuration State Functions
 * Helper functions
 
 ** Periodic table
