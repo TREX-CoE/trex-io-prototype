@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-12-04 Fri 10:37 -->
+<!-- 2020-12-04 Fri 15:46 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>TREX I/O library</title>
@@ -261,38 +261,40 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgc0034d6">1. Installation</a></li>
-<li><a href="#orgd14ccdd">2. Conventions</a></li>
-<li><a href="#orgb3e52c7">3. Metadata</a></li>
-<li><a href="#org1006a6f">4. Electrons</a></li>
-<li><a href="#org7e7d0e8">5. Nuclei</a></li>
-<li><a href="#org1393199">6. Effective core potentials</a></li>
-<li><a href="#orgb08fa5e">7. Basis set</a></li>
-<li><a href="#org52ab068">8. One-electron integrals on the basis set</a></li>
-<li><a href="#org90042d8">9. Two-electron integrals on the basis set</a></li>
-<li><a href="#org7d912cf">10. Molecular orbitals</a></li>
-<li><a href="#orgb207861">11. One-electron integrals in the MO basis</a></li>
-<li><a href="#orgf4b78fc">12. Two-electron integrals in the MO basis</a></li>
-<li><a href="#orgbf3b003">13. Helper functions</a>
+<li><a href="#org3c999c5">1. Installation</a></li>
+<li><a href="#org1982008">2. Conventions</a></li>
+<li><a href="#orga785757">3. Metadata</a></li>
+<li><a href="#orgf968f69">4. Electrons</a></li>
+<li><a href="#orgc46d486">5. Nuclei</a></li>
+<li><a href="#org2454ae2">6. Effective core potentials</a></li>
+<li><a href="#orgd8f70e5">7. Basis set</a></li>
+<li><a href="#org4751473">8. One-electron integrals on the basis set</a></li>
+<li><a href="#orgca078a2">9. Two-electron integrals on the basis set</a></li>
+<li><a href="#org2f9edaf">10. Molecular orbitals</a></li>
+<li><a href="#org54ff4eb">11. One-electron integrals in the MO basis</a></li>
+<li><a href="#orgd17a21f">12. Two-electron integrals in the MO basis</a></li>
+<li><a href="#orgf55d544">13. <span class="todo TODO">TODO</span> Determinants</a></li>
+<li><a href="#org9eebfec">14. <span class="todo TODO">TODO</span> Configuration State Functions</a></li>
+<li><a href="#org1ba35e0">15. Helper functions</a>
 <ul>
-<li><a href="#orgc465392">13.1. Periodic table</a>
+<li><a href="#orgdccb9b9">15.1. Periodic table</a>
 <ul>
-<li><a href="#orgd2e11a6">13.1.1. <code>trexio_element_name_of_symbol</code></a></li>
-<li><a href="#org6ff5f1f">13.1.2. <code>trexio_element_number_of_symbol</code></a></li>
-<li><a href="#org9f7b349">13.1.3. <code>trexio_element_symbol_of_number</code></a></li>
+<li><a href="#org555a77c">15.1.1. <code>trexio_element_name_of_symbol</code></a></li>
+<li><a href="#org7f5ea61">15.1.2. <code>trexio_element_number_of_symbol</code></a></li>
+<li><a href="#org2c1c5f3">15.1.3. <code>trexio_element_symbol_of_number</code></a></li>
 </ul>
 </li>
-<li><a href="#orgf8deca4">13.2. Spherical to cartesian coordinates transformation</a></li>
+<li><a href="#orgcea1ee1">15.2. Spherical to cartesian coordinates transformation</a></li>
 </ul>
 </li>
-<li><a href="#org4b531b9">14. Acknowledgments</a></li>
+<li><a href="#org968e29e">16. Acknowledgments</a></li>
 </ul>
 </div>
 </div>
 
 
-<div id="outline-container-orgc0034d6" class="outline-2">
-<h2 id="orgc0034d6"><span class="section-number-2">1</span> Installation</h2>
+<div id="outline-container-org3c999c5" class="outline-2">
+<h2 id="org3c999c5"><span class="section-number-2">1</span> Installation</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 This prototype uses  the EZFIO library generator,  which is provided
@@ -366,9 +368,8 @@ To create the <code>config.trex</code> file from this file, run
 </div>
 </div>
 
-
-<div id="outline-container-orgd14ccdd" class="outline-2">
-<h2 id="orgd14ccdd"><span class="section-number-2">2</span> Conventions</h2>
+<div id="outline-container-org1982008" class="outline-2">
+<h2 id="org1982008"><span class="section-number-2">2</span> Conventions</h2>
 <div class="outline-text-2" id="text-2">
 <ul class="org-ul">
 <li>All data is stored in atomic units.</li>
@@ -383,8 +384,8 @@ in Fortran)</li>
 </div>
 </div>
 
-<div id="outline-container-orgb3e52c7" class="outline-2">
-<h2 id="orgb3e52c7"><span class="section-number-2">3</span> Metadata</h2>
+<div id="outline-container-orga785757" class="outline-2">
+<h2 id="orga785757"><span class="section-number-2">3</span> Metadata</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-org">metadata
@@ -434,8 +435,8 @@ in Fortran)</li>
 </div>
 </div>
 
-<div id="outline-container-org1006a6f" class="outline-2">
-<h2 id="org1006a6f"><span class="section-number-2">4</span> Electrons</h2>
+<div id="outline-container-orgf968f69" class="outline-2">
+<h2 id="orgf968f69"><span class="section-number-2">4</span> Electrons</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-org">electron
@@ -467,8 +468,8 @@ in Fortran)</li>
 </div>
 </div>
 
-<div id="outline-container-org7e7d0e8" class="outline-2">
-<h2 id="org7e7d0e8"><span class="section-number-2">5</span> Nuclei</h2>
+<div id="outline-container-orgc46d486" class="outline-2">
+<h2 id="orgc46d486"><span class="section-number-2">5</span> Nuclei</h2>
 <div class="outline-text-2" id="text-5">
 <div class="org-src-container">
 <pre class="src src-org">nucleus
@@ -519,8 +520,8 @@ in Fortran)</li>
 </div>
 </div>
 
-<div id="outline-container-org1393199" class="outline-2">
-<h2 id="org1393199"><span class="section-number-2">6</span> Effective core potentials</h2>
+<div id="outline-container-org2454ae2" class="outline-2">
+<h2 id="org2454ae2"><span class="section-number-2">6</span> Effective core potentials</h2>
 <div class="outline-text-2" id="text-6">
 <div class="org-src-container">
 <pre class="src src-org">ecp
@@ -613,8 +614,8 @@ in Fortran)</li>
 </div>
 </div>
 
-<div id="outline-container-orgb08fa5e" class="outline-2">
-<h2 id="orgb08fa5e"><span class="section-number-2">7</span> Basis set</h2>
+<div id="outline-container-orgd8f70e5" class="outline-2">
+<h2 id="orgd8f70e5"><span class="section-number-2">7</span> Basis set</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 By definition, atomic orbitals (AOs) are centered on the nuclei.  To
@@ -662,7 +663,7 @@ behavior of the AO (Gaussian or Slater).
 The full AO basis can be expanded according to the fixed orders of
 angular functions. For real spherical harmonics, the order is \(-l,
   \dots, 0,  \dots, l\).  For cartesian functions,  the order  is the
-alphanumeric order of the string built as <code>a*"x"+b*"y"+c*"z"</code>. For
+alphanumeric order of the string built as <code>a*"x"+b*"y"+c*"z"</code> . For
 instance the polynomial \(x^3yz^2\) is expressed as <code>"xxxyzz"</code>.
 </p>
 
@@ -711,8 +712,8 @@ With Slater orbitals, the radial part is expressed as
 </div>
 </div>
 
-<div id="outline-container-org52ab068" class="outline-2">
-<h2 id="org52ab068"><span class="section-number-2">8</span> One-electron integrals on the basis set</h2>
+<div id="outline-container-org4751473" class="outline-2">
+<h2 id="org4751473"><span class="section-number-2">8</span> One-electron integrals on the basis set</h2>
 <div class="outline-text-2" id="text-8">
 <div class="org-src-container">
 <pre class="src src-org">basis_1e_int
@@ -728,8 +729,8 @@ With Slater orbitals, the radial part is expressed as
 </div>
 </div>
 
-<div id="outline-container-org90042d8" class="outline-2">
-<h2 id="org90042d8"><span class="section-number-2">9</span> Two-electron integrals on the basis set</h2>
+<div id="outline-container-orgca078a2" class="outline-2">
+<h2 id="orgca078a2"><span class="section-number-2">9</span> Two-electron integrals on the basis set</h2>
 <div class="outline-text-2" id="text-9">
 <div class="org-src-container">
 <pre class="src src-org">basis_2e_int
@@ -745,8 +746,8 @@ With Slater orbitals, the radial part is expressed as
 </div>
 </div>
 
-<div id="outline-container-org7d912cf" class="outline-2">
-<h2 id="org7d912cf"><span class="section-number-2">10</span> Molecular orbitals</h2>
+<div id="outline-container-org2f9edaf" class="outline-2">
+<h2 id="org2f9edaf"><span class="section-number-2">10</span> Molecular orbitals</h2>
 <div class="outline-text-2" id="text-10">
 <p>
 The MOs are expanded on the <i>normalized</i> atomic basis set:
@@ -770,8 +771,8 @@ The MOs are expanded on the <i>normalized</i> atomic basis set:
 </div>
 </div>
 
-<div id="outline-container-orgb207861" class="outline-2">
-<h2 id="orgb207861"><span class="section-number-2">11</span> One-electron integrals in the MO basis</h2>
+<div id="outline-container-org54ff4eb" class="outline-2">
+<h2 id="org54ff4eb"><span class="section-number-2">11</span> One-electron integrals in the MO basis</h2>
 <div class="outline-text-2" id="text-11">
 <div class="org-src-container">
 <pre class="src src-org">mo_1e_int
@@ -786,8 +787,8 @@ The MOs are expanded on the <i>normalized</i> atomic basis set:
 </div>
 </div>
 
-<div id="outline-container-orgf4b78fc" class="outline-2">
-<h2 id="orgf4b78fc"><span class="section-number-2">12</span> Two-electron integrals in the MO basis</h2>
+<div id="outline-container-orgd17a21f" class="outline-2">
+<h2 id="orgd17a21f"><span class="section-number-2">12</span> Two-electron integrals in the MO basis</h2>
 <div class="outline-text-2" id="text-12">
 <div class="org-src-container">
 <pre class="src src-org">mo_2e_int
@@ -803,35 +804,41 @@ The MOs are expanded on the <i>normalized</i> atomic basis set:
 </div>
 </div>
 
-<div id="outline-container-orgbf3b003" class="outline-2">
-<h2 id="orgbf3b003"><span class="section-number-2">13</span> Helper functions</h2>
-<div class="outline-text-2" id="text-13">
+<div id="outline-container-orgf55d544" class="outline-2">
+<h2 id="orgf55d544"><span class="section-number-2">13</span> <span class="todo TODO">TODO</span> Determinants</h2>
 </div>
-<div id="outline-container-orgc465392" class="outline-3">
-<h3 id="orgc465392"><span class="section-number-3">13.1</span> Periodic table</h3>
-<div class="outline-text-3" id="text-13-1">
+<div id="outline-container-org9eebfec" class="outline-2">
+<h2 id="org9eebfec"><span class="section-number-2">14</span> <span class="todo TODO">TODO</span> Configuration State Functions</h2>
 </div>
-<div id="outline-container-orgd2e11a6" class="outline-4">
-<h4 id="orgd2e11a6"><span class="section-number-4">13.1.1</span> <code>trexio_element_name_of_symbol</code></h4>
-<div class="outline-text-4" id="text-13-1-1">
+<div id="outline-container-org1ba35e0" class="outline-2">
+<h2 id="org1ba35e0"><span class="section-number-2">15</span> Helper functions</h2>
+<div class="outline-text-2" id="text-15">
+</div>
+<div id="outline-container-orgdccb9b9" class="outline-3">
+<h3 id="orgdccb9b9"><span class="section-number-3">15.1</span> Periodic table</h3>
+<div class="outline-text-3" id="text-15-1">
+</div>
+<div id="outline-container-org555a77c" class="outline-4">
+<h4 id="org555a77c"><span class="section-number-4">15.1.1</span> <code>trexio_element_name_of_symbol</code></h4>
+<div class="outline-text-4" id="text-15-1-1">
 <p>
 Returns the name of an element from its symbol
 </p>
 </div>
 </div>
 
-<div id="outline-container-org6ff5f1f" class="outline-4">
-<h4 id="org6ff5f1f"><span class="section-number-4">13.1.2</span> <code>trexio_element_number_of_symbol</code></h4>
-<div class="outline-text-4" id="text-13-1-2">
+<div id="outline-container-org7f5ea61" class="outline-4">
+<h4 id="org7f5ea61"><span class="section-number-4">15.1.2</span> <code>trexio_element_number_of_symbol</code></h4>
+<div class="outline-text-4" id="text-15-1-2">
 <p>
 Returns the atomic number of an element from its symbol
 </p>
 </div>
 </div>
 
-<div id="outline-container-org9f7b349" class="outline-4">
-<h4 id="org9f7b349"><span class="section-number-4">13.1.3</span> <code>trexio_element_symbol_of_number</code></h4>
-<div class="outline-text-4" id="text-13-1-3">
+<div id="outline-container-org2c1c5f3" class="outline-4">
+<h4 id="org2c1c5f3"><span class="section-number-4">15.1.3</span> <code>trexio_element_symbol_of_number</code></h4>
+<div class="outline-text-4" id="text-15-1-3">
 <p>
 Returns the symbol of an element from its atomic number
 </p>
@@ -840,9 +847,9 @@ Returns the symbol of an element from its atomic number
 </div>
 
 
-<div id="outline-container-orgf8deca4" class="outline-3">
-<h3 id="orgf8deca4"><span class="section-number-3">13.2</span> Spherical to cartesian coordinates transformation</h3>
-<div class="outline-text-3" id="text-13-2">
+<div id="outline-container-orgcea1ee1" class="outline-3">
+<h3 id="orgcea1ee1"><span class="section-number-3">15.2</span> Spherical to cartesian coordinates transformation</h3>
+<div class="outline-text-3" id="text-15-2">
 <p>
 The transformation matrix from the  AO basis expressed in spherical
 coordinates to the AO basis  expressed in cartesian coordinates can
@@ -856,9 +863,9 @@ be retrieved, as well as its pseudo-inverse.
 </div>
 </div>
 </div>
-<div id="outline-container-org4b531b9" class="outline-2">
-<h2 id="org4b531b9"><span class="section-number-2">14</span> Acknowledgments</h2>
-<div class="outline-text-2" id="text-14">
+<div id="outline-container-org968e29e" class="outline-2">
+<h2 id="org968e29e"><span class="section-number-2">16</span> Acknowledgments</h2>
+<div class="outline-text-2" id="text-16">
 <p>
 <img src="https://trex-coe.eu/sites/default/files/inline-images/euflag.jpg" alt="euflag.jpg" />
 <a href="https://trex-coe.eu">TREX: Targeting Real Chemical Accuracy at the Exascale</a>
@@ -872,7 +879,7 @@ that might be made of such content.
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="date">Created: 2020-12-04 Fri 10:37</p>
+<p class="date">Created: 2020-12-04 Fri 15:46</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
